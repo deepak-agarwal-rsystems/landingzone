@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "value": "vm-z-sqld-n"
+        },
+        "networkInterfacesName": {
+            "value": "vm-z-sqld-n-nic"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplus-n-001"
+        },
+        "subnetName": {
+            "value": "sn-z-cplus-db"
+        }
+    }
+}

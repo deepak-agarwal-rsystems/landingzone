@@ -1,0 +1,819 @@
+{
+	"$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+	"contentVersion": "1.0.0.0",
+	"parameters": {
+		"virtualMachines_vmzpalop001_name": {
+			"defaultValue": "vmzpalop01",
+			"type": "String"
+		},
+		"virtualMachines_vmzpalop002_name": {
+			"defaultValue": "vmzpalop02",
+			"type": "String"
+		},
+		"publicIPAddresses_cpluspalo001_name": {
+			"defaultValue": "cpluspalo01",
+			"type": "String"
+		},
+		"publicIPAddresses_cpluspalo002_name": {
+			"defaultValue": "cpluspalo02",
+			"type": "String"
+		},
+		"networkSecurityGroups_DefaultNSG_name": {
+			"defaultValue": "DefaultNSG01",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name": {
+			"defaultValue": "vmzpalop01-cpluspalo001-vpn1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop002_cpluspalo002_vpn2_name": {
+			"defaultValue": "vmzpalop02-cpluspalo002-vpn2",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name": {
+			"defaultValue": "vmzpalop01-cpluspalo001-mgmt1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop002_cpluspalo002_mgmt2_name": {
+			"defaultValue": "vmzpalop02-cpluspalo002-mgmt2",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_trust1_name": {
+			"defaultValue": "vmzpalop01-cpluspalo001-trust1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop002_cpluspalo002_trust2_name": {
+			"defaultValue": "vmzpalop02-cpluspalo002-trust2",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name": {
+			"defaultValue": "vmzpalop01-cpluspalo001-untrust1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop002_cpluspalo002_untrust2_name": {
+			"defaultValue": "vmzpalop02-cpluspalo002-untrust2",
+			"type": "String"
+		},
+		"virtualNetworks_vnet_z_cplusgw_p_001_externalid": {
+			"defaultValue": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-gw-p-001/providers/Microsoft.Network/virtualNetworks/vnet-z-cplusgw-p-001",
+			"type": "String"
+		}
+	},
+	"variables": {},
+	"resources": [
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop002_cpluspalo002_trust2_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:57.6055287Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-trust",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_trust2_name')), '/ipConfigurations/ipconfig-trust')]",
+						"etag": "W/\"1ae8e2bd-2b3a-47e8-b93c-6c8bb5c7ec2f\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/TrustSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": true,
+				"enableIPForwarding": true,
+				"disableTcpStateTracking": false,
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop002_cpluspalo002_vpn2_name')]",
+			"location": "centralus",
+			"tags": {
+				"Cost Center": "1108-300-8602",
+				"CreatedOnDate": "2024-04-01T18:02:35.9756442Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "Ipv4config",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_vpn2_name')), '/ipConfigurations/Ipv4config')]",
+						"etag": "W/\"420d92fe-3929-4474-8c6b-099b9b724a75\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/PaloVPNSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": true,
+				"enableIPForwarding": true,
+				"disableTcpStateTracking": false,
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkSecurityGroups",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkSecurityGroups_DefaultNSG_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:44.2750832Z",
+				"Provision Type": "Migrated"
+			},
+			"properties": {
+				"securityRules": [
+					{
+						"name": "Allow-Outside-From-IP",
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_DefaultNSG_name'), 'Allow-Outside-From-IP')]",
+						"type": "Microsoft.Network/networkSecurityGroups/securityRules",
+						"properties": {
+							"description": "Rule",
+							"protocol": "*",
+							"sourcePortRange": "*",
+							"destinationPortRange": "*",
+							"sourceAddressPrefix": "0.0.0.0/0",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 100,
+							"direction": "Inbound",
+							"sourcePortRanges": [],
+							"destinationPortRanges": [],
+							"sourceAddressPrefixes": [],
+							"destinationAddressPrefixes": []
+						}
+					},
+					{
+						"name": "Allow-Intra",
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_DefaultNSG_name'), 'Allow-Intra')]",
+						"type": "Microsoft.Network/networkSecurityGroups/securityRules",
+						"properties": {
+							"description": "Allow intra network traffic",
+							"protocol": "*",
+							"sourcePortRange": "*",
+							"destinationPortRange": "*",
+							"destinationAddressPrefix": "*",
+							"access": "Allow",
+							"priority": 101,
+							"direction": "Inbound",
+							"sourcePortRanges": [],
+							"destinationPortRanges": [],
+							"sourceAddressPrefixes": [
+								"10.195.72.0/22"
+							],
+							"destinationAddressPrefixes": []
+						}
+					},
+					{
+						"name": "Default-Deny",
+						"id": "[resourceId('Microsoft.Network/networkSecurityGroups/securityRules', parameters('networkSecurityGroups_DefaultNSG_name'), 'Default-Deny')]",
+						"type": "Microsoft.Network/networkSecurityGroups/securityRules",
+						"properties": {
+							"description": "Default-Deny if we don't match Allow rule",
+							"protocol": "*",
+							"sourcePortRange": "*",
+							"destinationPortRange": "*",
+							"sourceAddressPrefix": "*",
+							"destinationAddressPrefix": "*",
+							"access": "Deny",
+							"priority": 200,
+							"direction": "Inbound",
+							"sourcePortRanges": [],
+							"destinationPortRanges": [],
+							"sourceAddressPrefixes": [],
+							"destinationAddressPrefixes": []
+						}
+					}
+				]
+			}
+		},
+		{
+			"type": "Microsoft.Network/publicIPAddresses",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('publicIPAddresses_cpluspalo001_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:44.2749202Z",
+				"Provision Type": "Migrated"
+			},
+			"sku": {
+				"name": "Standard",
+				"tier": "Regional"
+			},
+			"properties": {
+				"publicIPAddressVersion": "IPv4",
+				"publicIPAllocationMethod": "Static",
+				"idleTimeoutInMinutes": 4,
+				"dnsSettings": {
+					"domainNameLabel": "[parameters('publicIPAddresses_cpluspalo001_name')]",
+					"fqdn": "[concat(parameters('publicIPAddresses_cpluspalo001_name'), '.centralus.cloudapp.azure.com')]"
+				},
+				"ipTags": [],
+				"ddosSettings": {
+					"protectionMode": "VirtualNetworkInherited"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/publicIPAddresses",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('publicIPAddresses_cpluspalo002_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:44.2749202Z",
+				"Provision Type": "Migrated"
+			},
+			"sku": {
+				"name": "Standard",
+				"tier": "Regional"
+			},
+			"properties": {
+				"publicIPAddressVersion": "IPv4",
+				"publicIPAllocationMethod": "Static",
+				"idleTimeoutInMinutes": 4,
+				"dnsSettings": {
+					"domainNameLabel": "[parameters('publicIPAddresses_cpluspalo002_name')]",
+					"fqdn": "[concat(parameters('publicIPAddresses_cpluspalo002_name'), '.centralus.cloudapp.azure.com')]"
+				},
+				"ipTags": [],
+				"ddosSettings": {
+					"protectionMode": "VirtualNetworkInherited"
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_trust1_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:57.6055287Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-trust",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_trust1_name')), '/ipConfigurations/ipconfig-trust')]",
+						"etag": "W/\"fdd9f926-977f-46b7-b676-c362230f7064\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/TrustSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": true,
+				"enableIPForwarding": true,
+				"disableTcpStateTracking": false,
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:57.6061136Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-untrust",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name')), '/ipConfigurations/ipconfig-untrust')]",
+						"etag": "W/\"e0bfd232-136e-47fc-815a-e3c8fa17195d\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/UntrustSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					},
+					{
+						"name": "ipconfig-ELB",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name')), '/ipConfigurations/ipconfig-ELB')]",
+						"etag": "W/\"e0bfd232-136e-47fc-815a-e3c8fa17195d\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/UntrustSnet')]"
+							},
+							"primary": false,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": true,
+				"enableIPForwarding": true,
+				"disableTcpStateTracking": false,
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-29T17:34:56.5083008Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "Ipv4config",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name')), '/ipConfigurations/Ipv4config')]",
+						"etag": "W/\"f6f4e96e-ae74-4ce1-b40c-39d5d6c0d589\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/PaloVPNSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": false,
+				"enableIPForwarding": true,
+				"disableTcpStateTracking": false,
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop002_cpluspalo002_untrust2_name')]",
+			"location": "centralus",
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:57.6061136Z",
+				"Provision Type": "Migrated",
+				"Application": "TBD"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-untrust",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_untrust2_name')), '/ipConfigurations/ipconfig-untrust')]",
+						"etag": "W/\"e73e1935-1c5a-4bfb-adbb-ba93f46bcc2e\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/UntrustSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					},
+					{
+						"name": "ipconfig-AppGateway",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_untrust2_name')), '/ipConfigurations/ipconfig-AppGateway')]",
+						"etag": "W/\"e73e1935-1c5a-4bfb-adbb-ba93f46bcc2e\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/UntrustSnet')]"
+							},
+							"primary": false,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": true,
+				"enableIPForwarding": true,
+				"disableTcpStateTracking": false,
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkSecurityGroups/securityRules",
+			"apiVersion": "2023-09-01",
+			"name": "[concat(parameters('networkSecurityGroups_DefaultNSG_name'), '/Allow-Intra')]",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+			],
+			"properties": {
+				"description": "Allow intra network traffic",
+				"protocol": "*",
+				"sourcePortRange": "*",
+				"destinationPortRange": "*",
+				"destinationAddressPrefix": "*",
+				"access": "Allow",
+				"priority": 101,
+				"direction": "Inbound",
+				"sourcePortRanges": [],
+				"destinationPortRanges": [],
+				"sourceAddressPrefixes": [
+					"10.195.72.0/22"
+				],
+				"destinationAddressPrefixes": []
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkSecurityGroups/securityRules",
+			"apiVersion": "2023-09-01",
+			"name": "[concat(parameters('networkSecurityGroups_DefaultNSG_name'), '/Allow-Outside-From-IP')]",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+			],
+			"properties": {
+				"description": "Rule",
+				"protocol": "*",
+				"sourcePortRange": "*",
+				"destinationPortRange": "*",
+				"sourceAddressPrefix": "0.0.0.0/0",
+				"destinationAddressPrefix": "*",
+				"access": "Allow",
+				"priority": 100,
+				"direction": "Inbound",
+				"sourcePortRanges": [],
+				"destinationPortRanges": [],
+				"sourceAddressPrefixes": [],
+				"destinationAddressPrefixes": []
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkSecurityGroups/securityRules",
+			"apiVersion": "2023-09-01",
+			"name": "[concat(parameters('networkSecurityGroups_DefaultNSG_name'), '/Default-Deny')]",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+			],
+			"properties": {
+				"description": "Default-Deny if we don't match Allow rule",
+				"protocol": "*",
+				"sourcePortRange": "*",
+				"destinationPortRange": "*",
+				"sourceAddressPrefix": "*",
+				"destinationAddressPrefix": "*",
+				"access": "Deny",
+				"priority": 200,
+				"direction": "Inbound",
+				"sourcePortRanges": [],
+				"destinationPortRanges": [],
+				"sourceAddressPrefixes": [],
+				"destinationAddressPrefixes": []
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name')]",
+			"location": "centralus",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_cpluspalo001_name'))]",
+				"[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+			],
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:57.6055286Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-mgmt",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name')), '/ipConfigurations/ipconfig-mgmt')]",
+						"etag": "W/\"f456d8e5-9663-492c-a8b9-0c27ea9f37ee\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"publicIPAddress": {
+								"id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_cpluspalo001_name'))]"
+							},
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/MgmtSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": false,
+				"enableIPForwarding": false,
+				"disableTcpStateTracking": false,
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+				},
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Network/networkInterfaces",
+			"apiVersion": "2023-09-01",
+			"name": "[parameters('networkInterfaces_vmzpalop002_cpluspalo002_mgmt2_name')]",
+			"location": "centralus",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_cpluspalo002_name'))]",
+				"[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+			],
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:03:57.6055286Z",
+				"Provision Type": "Migrated"
+			},
+			"kind": "Regular",
+			"properties": {
+				"ipConfigurations": [
+					{
+						"name": "ipconfig-mgmt",
+						"id": "[concat(resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_mgmt2_name')), '/ipConfigurations/ipconfig-mgmt')]",
+						"etag": "W/\"adc95dbd-0e84-4836-a0d5-0894a7a4cb02\"",
+						"type": "Microsoft.Network/networkInterfaces/ipConfigurations",
+						"properties": {
+							"provisioningState": "Succeeded",
+							"publicIPAddress": {
+								"id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddresses_cpluspalo002_name'))]"
+							},
+							"subnet": {
+								"id": "[concat(parameters('virtualNetworks_vnet_z_cplusgw_p_001_externalid'), '/subnets/MgmtSnet')]"
+							},
+							"primary": true,
+							"privateIPAddressVersion": "IPv4"
+						}
+					}
+				],
+				"dnsSettings": {
+					"dnsServers": []
+				},
+				"enableAcceleratedNetworking": false,
+				"enableIPForwarding": false,
+				"disableTcpStateTracking": false,
+				"networkSecurityGroup": {
+					"id": "[resourceId('Microsoft.Network/networkSecurityGroups', parameters('networkSecurityGroups_DefaultNSG_name'))]"
+				},
+				"nicType": "Standard",
+				"auxiliaryMode": "None",
+				"auxiliarySku": "None"
+			}
+		},
+		{
+			"type": "Microsoft.Compute/virtualMachines",
+			"apiVersion": "2023-03-01",
+			"name": "[parameters('virtualMachines_vmzpalop001_name')]",
+			"location": "centralus",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_trust1_name'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name'))]"
+			],
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:04:05.3209432Z",
+				"IAASType": "Virtual Machine",
+				"Provision Type": "Migrated"
+			},
+			"zones": [
+				"1"
+			],
+			"identity": {
+				"type": "SystemAssigned"
+			},
+			"plan": {
+				"name": "byol",
+				"product": "vmseries-flex",
+				"publisher": "paloaltonetworks"
+			},
+			"properties": {
+				"hardwareProfile": {
+					"vmSize": "Standard_D16s_v4"
+				},
+				"storageProfile": {
+					"imageReference": {
+						"publisher": "paloaltonetworks",
+						"offer": "vmseries-flex",
+						"sku": "byol",
+						"version": "10.2.1"
+					},
+					"osDisk": {
+						"osType": "Linux",
+						"name": "[concat(parameters('virtualMachines_vmzpalop001_name'), '_OsDisk_1_41e03993590c4d4db3e97f48685c9a74')]",
+						"createOption": "FromImage",
+						"caching": "ReadWrite",
+						"deleteOption": "Detach",
+						"diskSizeGB": 60
+					},
+					"dataDisks": []
+				},
+				"osProfile": {
+					"computerName": "[parameters('virtualMachines_vmzpalop001_name')]",
+					"adminUsername": "paloadmin",
+                    "adminPassword": "hUysT78tH$R65uI",
+					"linuxConfiguration": {
+						"disablePasswordAuthentication": false,
+						"provisionVMAgent": true,
+						"patchSettings": {
+							"patchMode": "ImageDefault",
+							"assessmentMode": "ImageDefault"
+						},
+						"enableVMAgentPlatformUpdates": false
+					},
+					"secrets": [],
+					"allowExtensionOperations": true
+				},
+				"networkProfile": {
+					"networkInterfaces": [
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name'))]",
+							"properties": {
+								"primary": true
+							}
+						},
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name'))]",
+							"properties": {
+								"primary": false
+							}
+						},
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_trust1_name'))]",
+							"properties": {
+								"primary": false
+							}
+						},
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name'))]",
+							"properties": {
+								"primary": false
+							}
+						}
+					]
+				},
+				"diagnosticsProfile": {
+					"bootDiagnostics": {
+						"enabled": true
+					}
+				}
+			}
+		},
+		{
+			"type": "Microsoft.Compute/virtualMachines",
+			"apiVersion": "2023-03-01",
+			"name": "[parameters('virtualMachines_vmzpalop002_name')]",
+			"location": "centralus",
+			"dependsOn": [
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_mgmt2_name'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_untrust2_name'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_trust2_name'))]",
+				"[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_vpn2_name'))]"
+			],
+			"tags": {
+				"CreatedOnDate": "2024-02-12T18:04:05.3209432Z",
+				"IAASType": "Virtual Machine",
+				"Provision Type": "Migrated"
+			},
+			"zones": [
+				"2"
+			],
+			"identity": {
+				"type": "SystemAssigned"
+			},
+			"plan": {
+				"name": "byol",
+				"product": "vmseries-flex",
+				"publisher": "paloaltonetworks"
+			},
+			"properties": {
+				"hardwareProfile": {
+					"vmSize": "Standard_D16s_v4"
+				},
+				"storageProfile": {
+					"imageReference": {
+						"publisher": "paloaltonetworks",
+						"offer": "vmseries-flex",
+						"sku": "byol",
+						"version": "10.2.1"
+					},
+					"osDisk": {
+						"osType": "Linux",
+						"name": "[concat(parameters('virtualMachines_vmzpalop002_name'), '_OsDisk_1_cd72d7b0afa84ad38bb9175a1f9eac78')]",
+						"createOption": "FromImage",
+						"caching": "ReadWrite",
+						"managedDisk": {
+							"storageAccountType": "Standard_LRS"
+						},
+						"deleteOption": "Detach",
+						"diskSizeGB": 60
+					},
+					"dataDisks": []
+				},
+				"osProfile": {
+					"computerName": "[parameters('virtualMachines_vmzpalop002_name')]",
+					"adminUsername": "paloadmin",
+                    "adminPassword": "hUysT78tH$R65uI",
+					"linuxConfiguration": {
+						"disablePasswordAuthentication": false,
+						"provisionVMAgent": true,
+						"patchSettings": {
+							"patchMode": "ImageDefault",
+							"assessmentMode": "ImageDefault"
+						},
+						"enableVMAgentPlatformUpdates": false
+					},
+					"secrets": [],
+					"allowExtensionOperations": true
+				},
+				"networkProfile": {
+					"networkInterfaces": [
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_mgmt2_name'))]",
+							"properties": {
+								"primary": true
+							}
+						},
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_untrust2_name'))]",
+							"properties": {
+								"primary": false
+							}
+						},
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_trust2_name'))]",
+							"properties": {
+								"primary": false
+							}
+						},
+						{
+							"id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaces_vmzpalop002_cpluspalo002_vpn2_name'))]",
+							"properties": {
+								"primary": false
+							}
+						}
+					]
+				},
+				"diagnosticsProfile": {
+					"bootDiagnostics": {
+						"enabled": true
+					}
+				}
+			}
+		}
+	]
+}

@@ -1,0 +1,9 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSecurityGroupsName": {
+            "value": [ "nsg-z-cplus-gw-n-001", "nsg-z-cplus-ag-n-001", "nsg-z-cplus-pa-n-001" ]
+        }
+    }
+}

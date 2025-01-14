@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "loadBalancersName": {
+            "value": "ilb-z-cplus-ai-p-001"
+        },
+        "virtualNetworksName": {
+            "value": "vnet-z-cplus-p-001"
+        },
+        "subNetName": {
+            "value": "sn-z-cplus-infra"
+        },
+        "skuName": {
+            "value": "Standard"
+        },
+        "skuTier": {
+            "value": "Regional"
+        }
+    }
+}

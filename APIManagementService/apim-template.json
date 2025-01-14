@@ -1,0 +1,95 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apimName": {
+            "defaultValue": "api-z-cplus-infra-n-001",
+            "type": "String"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "skuName": {
+            "type": "String",
+            "defaultValue": "Premium"
+        },
+        "publisherEmail": {
+            "type": "String",
+            "defaultValue": "dagarwal@emerson.com"
+        },
+        "virtualNetworkName": {
+            "type": "string",
+            "defaultValue": "vnet-z-cplus-n-001"
+        },
+        "subnetName": {
+            "type": "string",
+            "defaultValue": "sn-z-cplus-infra"
+        },
+        "publicIPAddressesName": {
+            "defaultValue": "pip-z-cplus-api-p-001",
+            "type": "String"
+        },
+        "capacity": {
+            "type": "string"
+        },
+        "identity": {
+            "type": "object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.ApiManagement/service",
+            "apiVersion": "2023-03-01-preview",
+            "name": "[parameters('apimName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "identity": "[parameters('identity')]",
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "capacity": "[parameters('capacity')]"
+            },
+            "properties": {
+                "publisherEmail": "[parameters('publisherEmail')]",
+                "publisherName": "Copeland",
+                "notificationSenderEmail": "apimgmt-noreply@mail.windowsazure.com",
+                "hostnameConfigurations": [
+                    {
+                        "type": "Proxy",
+                        "hostName": "[concat(parameters('apimName'), '.azure-api.net')]",
+                        "negotiateClientCertificate": true,
+                        "defaultSslBinding": true,
+                        "certificateSource": "BuiltIn"
+                    }
+                ],
+                "virtualNetworkConfiguration": {
+                    "subnetResourceId": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                },
+                "customProperties": {
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls11": "true",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls11": "true",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Tls10": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Backend.Protocols.Ssl30": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Protocols.Server.Http2": "true",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Ciphers.TripleDes168": "false",
+                    "Microsoft.WindowsAzure.ApiManagement.Gateway.Security.Protocols.Ssl30": "false"
+                },
+                "virtualNetworkType": "Internal",
+                "apiVersionConstraint": {},
+                "publicIpAddressId": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressesName'))]",
+                "legacyPortalStatus": "Enabled",
+                "developerPortalStatus": "Enabled"
+            },
+            "resources": [],
+            "dependsOn": []
+        }
+    ]
+}

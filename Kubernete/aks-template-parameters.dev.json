@@ -1,0 +1,100 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "apiVersion": {
+            "value": "2023-10-01"
+        },
+        "resourceName": {
+            "value": "aks-z-cplus-infra-p-001"
+        },
+        "location": {
+            "value": "centralus"
+        },
+        "dnsPrefixdnsPrefix": {
+            "value": "aks-z-cplus-infra-p-001-dns"
+        },
+        "kubernetesVersion": {
+            "value": "1.27.7"
+        },
+        "networkPlugin": {
+            "value": "azure"
+        },
+        "enableRBAC": {
+            "value": true
+        },
+        "nodeResourceGroup": {
+            "value": "MC_rg-z-cplus-infra-p-001_aks-z-cplus-infra-p-001_centralus"
+        },
+        "clusterSku": {
+            "value": {
+                "name": "Base",
+                "tier": "Standard"
+            }
+        },
+        "upgradeChannel": {
+            "value": "patch"
+        },
+        "clusterIdentity": {
+            "value": {
+                "type": "SystemAssigned"
+            }
+        },
+        "adminGroupObjectIDs": {
+            "value": []
+        },
+        "disableLocalAccounts": {
+            "value": false
+        },
+        "azureRbac": {
+            "value": false
+        },
+        "enableOmsAgent": {
+            "value": false
+        },
+        "isAvailabilityZoneEnabled": {
+            "value": true
+        },
+        "nodeOSUpgradeChannel": {
+            "value": "NodeImage"
+        },
+        "isPrivateClusterSupported": {
+            "value": true
+        },
+        "enablePrivateCluster": {
+            "value": false
+        },
+        "isAzurePolicySupported": {
+            "value": true
+        },
+        "enableAzurePolicy": {
+            "value": true
+        },
+        "isSecretStoreCSIDDriverSupported": {
+            "value": true
+        },
+        "enableSecretStoreCSIDriver": {
+            "value": false
+        },
+        "vmssNodePool": {
+            "value": true
+        },
+        "vnetSubnetID": {
+            "value": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/virtualNetworks/vnet-z-cplus-p-001/subnets/sn-z-cplus-aks"
+        },
+        "serviceCidr": {
+            "value": "10.0.0.0/16"
+        },
+        "dnsServiceIP": {
+            "value": "10.0.0.10"
+        },
+        "networkPolicy": {
+            "value": "calico"
+        },
+        "clusterTags": {
+            "value": {
+                "Cost Center": "1108-300-8602"
+            }
+        }
+    }
+}

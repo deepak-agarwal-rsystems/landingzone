@@ -1,0 +1,174 @@
+{
+    "$schema": "http://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "registryName": {
+            "type": "string"
+        },
+        "registryLocation": {
+            "type": "string"
+        },
+        "zoneRedundancy": {
+            "type": "string"
+        },
+        "registrySku": {
+            "type": "string"
+        },
+        "registryApiVersion": {
+            "type": "string"
+        },
+        "tags": {
+            "type": "object"
+        },
+        "publicNetworkAccess": {
+            "type": "string"
+        }
+    },
+    "resources": [
+        {
+            "name": "[parameters('registryName')]",
+            "type": "Microsoft.ContainerRegistry/registries",
+            "location": "[parameters('registryLocation')]",
+            "apiVersion": "[parameters('registryApiVersion')]",
+            "sku": {
+                "name": "[parameters('registrySku')]"
+            },
+            "dependsOn": [
+                "Microsoft.Resources/deployments/vnet-z-cplus-p-001_12b9e62c-5fc2-4637-8f20-f510bb3eb021"
+            ],
+            "tags": "[parameters('tags')]",
+            "properties": {
+                "publicNetworkAccess": "[parameters('publicNetworkAccess')]",
+                "zoneRedundancy": "[parameters('zoneRedundancy')]"
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "type": "Microsoft.Resources/deployments",
+            "name": "pe-z-cplus-infra-api_12b9e62c-5fc2-4637-8f20-f510bb3eb022",
+            "subscriptionId": "bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db",
+            "resourceGroup": "rg-z-cplus-infra-p-001",
+            "dependsOn": [
+                "[resourceId('Microsoft.ContainerRegistry/registries', parameters('registryName'))]"
+            ],
+            "resources": [],
+            "properties": {
+                "mode": "Incremental",
+                "parameters": {
+                    "privateEndpointName": {
+                        "value": "pe-z-cplus-infra-api-p"
+                    },
+                    "privateEndpointConnectionId": {
+                        "value": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/privateEndpoints/privateLinkServiceConnections/pe-z-cplus-infra-api-p_8eb12f72-d166-4b8f-80cc-8af31ee99014"
+                    },
+                    "privateEndpointConnectionName": {
+                        "value": "pe-z-cplus-infra-api-p_8eb12f72-d166-4b8f-80cc-8af31ee99014"
+                    },
+                    "privateEndpointId": {
+                        "value": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/privateEndpoints/pe-z-cplus-infra-api-p"
+                    },
+                    "privateEndpointApiVersion": {
+                        "value": "2019-04-01"
+                    },
+                    "privateLinkServiceId": {
+                        "value": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourcegroups/rg-z-cplus-infra-p-001/providers/Microsoft.ContainerRegistry/registries/acrzcplusinfrap001"
+                    },
+                    "groupId": {
+                        "value": "registry"
+                    },
+                    "subnetId": {
+                        "value": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/virtualNetworks/vnet-z-cplus-p-001/subnets/sn-z-cplus-infra"
+                    },
+                    "location": {
+                        "value": "centralus"
+                    },
+                    "tags": {
+                        "value": {}
+                    }
+                },
+                "templatelink": {
+                    "contentVersion": "1.0.0.0",
+                    "uri": "https://containerregistry.hosting.portal.azure.net/containerregistry/Content/1.0.20240130.6/DeploymentTemplates/PrivateEndpointForRegistry.json"
+                }
+            }
+        },
+        {
+            "apiVersion": "2017-05-10",
+            "name": "PrivateDns-12b9e62c5fc246378f20f510bb3eb023",
+            "type": "Microsoft.Resources/deployments",
+            "resourceGroup": "[string('rg-z-cplus-infra-p-001')]",
+            "dependsOn": [
+                "[string('pe-z-cplus-infra-api_12b9e62c-5fc2-4637-8f20-f510bb3eb022')]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/privateDnsZones",
+                            "apiVersion": "2018-09-01",
+                            "name": "[string('privatelink.azurecr.io')]",
+                            "location": "global",
+                            "tags": {},
+                            "properties": {}
+                        },
+                        {
+                            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                            "apiVersion": "2018-09-01",
+                            "name": "[concat(string('privatelink.azurecr.io'), '/', uniqueString(string('/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/virtualNetworks/vnet-z-cplus-p-001')))]",
+                            "location": "global",
+                            "dependsOn": [
+                                "[string('privatelink.azurecr.io')]"
+                            ],
+                            "properties": {
+                                "virtualNetwork": {
+                                    "id": "[string('/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/virtualNetworks/vnet-z-cplus-p-001')]"
+                                },
+                                "registrationEnabled": false
+                            }
+                        },
+                        {
+                            "apiVersion": "2017-05-10",
+                            "name": "EndpointDnsRecords-12b9e62c5fc246378f20f510bb3eb023",
+                            "type": "Microsoft.Resources/deployments",
+                            "dependsOn": [
+                                "[string('privatelink.azurecr.io')]"
+                            ],
+                            "properties": {
+                                "mode": "Incremental",
+                                "templatelink": {
+                                    "contentVersion": "1.0.0.0",
+                                    "uri": "https://containerregistry.hosting.portal.azure.net/containerregistry/Content/1.0.20240130.6/DeploymentTemplates/PrivateDnsForPrivateEndpoint.json"
+                                },
+                                "parameters": {
+                                    "privateDnsName": {
+                                        "value": "[string('privatelink.azurecr.io')]"
+                                    },
+                                    "privateEndpointNicResourceId": {
+                                        "value": "[reference('pe-z-cplus-infra-api_12b9e62c-5fc2-4637-8f20-f510bb3eb022').outputs.networkInterfaceId.value]"
+                                    },
+                                    "nicRecordsTemplateUri": {
+                                        "value": "https://containerregistry.hosting.portal.azure.net/containerregistry/Content/1.0.20240130.6/DeploymentTemplates/PrivateDnsForPrivateEndpointNic.json"
+                                    },
+                                    "ipConfigRecordsTemplateUri": {
+                                        "value": "https://containerregistry.hosting.portal.azure.net/containerregistry/Content/1.0.20240130.6/DeploymentTemplates/PrivateDnsForPrivateEndpointIpConfig.json"
+                                    },
+                                    "uniqueId": {
+                                        "value": "12b9e62c5fc246378f20f510bb3eb023"
+                                    },
+                                    "existingRecords": {
+                                        "value": {}
+                                    }
+                                }
+                            }
+                        }
+                    ]
+                }
+            },
+            "subscriptionId": "[string('bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db')]"
+        }
+    ],
+    "outputs": {}
+}

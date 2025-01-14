@@ -1,0 +1,83 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceName": {
+            "value": "aks-z-cplus-infra-p-001"
+        },
+        "location": {
+            "value": "centralus"
+        },
+        "kubernetesVersion": {
+            "value": "1.27.7"
+        },
+        "networkPlugin": {
+            "value": "azure"
+        },
+        "enableRBAC": {
+            "value": true
+        },
+        "clusterSku": {
+            "value": {
+                "name": "Base",
+                "tier": "Standard"
+            }
+        },
+        "upgradeChannel": {
+            "value": "patch"
+        },
+        "clusterIdentity": {
+            "value": {
+                "type": "SystemAssigned"
+            }
+        },
+        "adminGroupObjectIDs": {
+            "value": []
+        },
+        "disableLocalAccounts": {
+            "value": false
+        },
+        "azureRbac": {
+            "value": false
+        },
+        "nodeOSUpgradeChannel": {
+            "value": "NodeImage"
+        },
+        "isPrivateClusterSupported": {
+            "value": true
+        },
+        "enablePrivateCluster": {
+            "value": false
+        },
+        "isAzurePolicySupported": {
+            "value": true
+        },
+        "enableAzurePolicy": {
+            "value": true
+        },
+        "isSecretStoreCSIDDriverSupported": {
+            "value": true
+        },
+        "enableSecretStoreCSIDriver": {
+            "value": false
+        },
+        "serviceCidr": {
+            "value": "10.0.0.0/16"
+        },
+        "dnsServiceIP": {
+            "value": "10.0.0.10"
+        },
+        "networkPolicy": {
+            "value": "calico"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplus-p-001"
+        },
+        "subnetName": {
+            "value": "sn-z-cplus-aks"
+        },
+        "infraResourceGroupName": {
+            "value": "rg-z-cplus-infra-p-001"
+        }
+    }
+}

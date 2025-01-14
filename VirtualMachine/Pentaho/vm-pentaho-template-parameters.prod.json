@@ -1,0 +1,18 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "numberOfInstances": {
+            "value": 1
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplus-p-001"
+        },
+        "galaryName":{
+            "value":"gallery_z_cplus_db_p_001"
+        },
+        "imageName":{
+            "value":"vmimage-z-cplus-spcl-z-001"
+        }
+    }
+}

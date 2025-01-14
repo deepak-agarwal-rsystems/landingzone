@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "value": "vm-z-aise-p"  
+        },
+        "vmSize": {
+            "value": "Standard_D8s_v4"
+        },
+        "numberOfInstances": {
+            "value": 1
+        },
+        "networkInterfacesName": {
+            "value": "vm-z-aise-p-nic"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplus-p-001"            
+        },
+        "subnetName": {
+            "value": "sn-z-cplus-ai"
+        },
+        "galaryName":{
+            "value":"gallery_z_cplus_db_p_001"
+        },
+        "imageName":{
+            "value":"vmimage-z-aise-p-001"
+        }
+    }
+}

@@ -1,0 +1,45 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "networkSecurityGroupsName": {
+            "value": [
+                "nsg-z-cplus-infra-p-001",
+                "nsg-z-cplus-db-p-001",
+                "nsg-z-cplus-ai-p-001",
+                "nsg-z-cplus-migration-p-001",
+                "nsg-z-cplus-publ-p-001",
+                "nsg-z-cplus-groc-p-001",
+                "nsg-z-cplus-cole-p-001",
+                "nsg-z-cplus-amaz-p-001",
+                "nsg-z-cplus-amsk-p-001",
+                "nsg-z-cplus-meij-p-001",
+                "nsg-z-cplus-whol-p-001",
+                "nsg-z-cplus-waca-p-001",
+                "nsg-z-cplus-cobo-p-001",
+                "nsg-z-cplus-emrl-p-001",
+                "nsg-z-cplus-huss-p-001",
+                "nsg-z-cplus-sdco-p-001",
+                "nsg-z-cplus-dscl-p-001",
+                "nsg-z-cplus-pens-p-001",
+                "nsg-z-cplus-bran-p-001",
+                "nsg-z-cplus-star-p-001",
+                "nsg-z-cplus-nsgs-p-001",
+                "nsg-z-cplus-plum-p-001",
+                "nsg-z-cplus-sulo-p-001",
+                "nsg-z-cplus-foli-p-001",
+                "nsg-z-cplus-demo-p-001",
+                "nsg-z-cplus-aldi-p-001",
+                "nsg-z-cplus-atsi-p-001",
+                "nsg-z-cplus-brin-p-001",
+                "nsg-z-cplus-burg-p-001",
+                "nsg-z-cplus-casa-p-001",
+                "nsg-z-cplus-heli-p-001",
+                "nsg-z-cplus-waus-p-001",
+                "nsg-z-cplus-pent-p-001",
+                "nsg-z-cplus-hans-p-001",
+                "nsg-z-cplus-stva-p-001"
+            ]
+        }
+    }
+}

@@ -1,0 +1,94 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkName": {
+            "value": "vnet-z-cplusgw-p-001"
+        },
+        "addressPrefixes": {
+            "value": [
+                "10.195.72.0/22",
+                "10.195.78.0/23"
+            ]
+        },
+        "subnets": {
+            "value": [
+                {
+                    "name": "GatewaySubnet",
+                    "properties": {
+                        "addressPrefixes": [
+                            "10.195.78.0/24"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled",
+                        "defaultOutboundAccess": true
+                    },
+                    "nsgName":""
+                },
+                {
+                    "name": "AzureBastionSubnet",
+                    "properties": {
+                        "addressPrefixes": [
+                            "10.195.79.0/26"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled",
+                        "defaultOutboundAccess": true
+                    },
+                    "nsgName":""
+                },
+                {
+                    "name": "sn-z-cplus-appgateway",
+                    "properties": {
+                        "addressPrefixes": [
+                            "10.195.79.64/26"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled",
+                        "defaultOutboundAccess": true
+                    },
+                    "nsgName":"nsg-z-cplus-ag-p-001"
+                },
+                {
+                    "name": "sn-z-cplus-palo",
+                    "properties": {
+                        "addressPrefixes": [
+                            "10.195.79.128/26"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    },
+                    "nsgName":"nsg-z-cplus-pa-p-001"
+                },
+                {
+                    "name": "sn-z-cplus-apn",
+                    "properties": {
+                        "addressPrefixes": [
+                            "10.195.72.0/22"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    },
+                    "nsgName":"nsg-z-cplus-apn-p-001"
+                },
+                {
+                    "name": "sn-z-cplus-infragw",
+                    "properties": {
+                        "addressPrefixes": [
+                            "10.195.79.192/26"
+                        ],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Disabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    },
+                    "nsgName":"nsg-z-cplus-infragw-p-001"
+                }
+            ]
+        }
+    }
+}

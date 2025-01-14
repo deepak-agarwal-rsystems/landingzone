@@ -1,0 +1,67 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "bastionHostsName": {
+            "defaultValue": "bastion-z-cplus-n-001",
+            "type": "String"
+        },
+        "publicIp-name":{
+            "type": "string",
+            "defaultValue":"pip-z-cplus-bastion-n-001"
+        },
+        "virtualNetworkName":{
+            "type": "string",
+            "defaultValue":"vnet-z-cplus-n-001"
+        },
+        "subnetName":{
+            "type": "string",
+            "defaultValue":"AzureBastionSubnet"
+        },
+         "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "sku": {
+            "type": "String",
+            "defaultValue": "Basic"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/bastionHosts",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('bastionHostsName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "sku": {
+                "name": "[parameters('sku')]"
+            },
+            "properties": {
+                "scaleUnits": 2,
+                "ipConfigurations": [
+                    {
+                        "name": "IpConf",
+                        "id": "[concat(resourceId('Microsoft.Network/bastionHosts', parameters('bastionHostsName')), '/bastionHostIpConfigurations/IpConf')]",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "publicIPAddress": {
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIp-name'))]"
+                            },
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                            }
+                        }
+                    }
+                ]
+            }
+        }
+    ]
+}

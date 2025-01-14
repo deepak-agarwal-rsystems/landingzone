@@ -1,0 +1,351 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "variables": {
+        "defaultAadProfile": {
+            "managed": true,
+            "adminGroupObjectIDs": "[parameters('adminGroupObjectIDs')]",
+            "enableAzureRBAC": "[parameters('azureRbac')]"
+        },
+        "defaultApiServerAccessProfile": {
+            "authorizedIPRanges": "[if(parameters('enableAuthorizedIpRange'), parameters('authorizedIPRanges'), null())]",
+            "enablePrivateCluster": "[parameters('enablePrivateCluster')]"
+        },
+        "defaultAzurePolicy": {
+            "enabled": "[parameters('enableAzurePolicy')]"
+        },
+        "defaultSecrectStoreProvider": {
+            "enabled": "[parameters('enableSecretStoreCSIDriver')]",
+            "config": "[if(parameters('enableSecretStoreCSIDriver'), variables('secrectStoreConfig'), null())]"
+        },
+        "secrectStoreConfig": {
+            "enableSecretRotation": "false",
+            "rotationPollInterval": "2m"
+        }
+    },
+    "parameters": {
+        "resourceName": {
+            "type": "string"
+        },
+        "location": {
+            "type": "string"
+        },
+        "clusterSku": {
+            "defaultValue": {
+                "name": "Base",
+                "tier": "Standard"
+            },
+            "type": "object"
+        },
+        "clusterIdentity": {
+            "defaultValue": {
+                "type": "SystemAssigned"
+            },
+            "type": "object"
+        },
+        "enableAadProfile": {
+            "defaultValue": false,
+            "type": "bool"
+        },
+        "kubernetesVersion": {
+            "type": "string",
+            "defaultValue": "1.7.7"
+        },
+        "enableRBAC": {
+            "type": "bool",
+            "defaultValue": true
+        },
+        "upgradeChannel": {
+            "defaultValue": "none",
+            "type": "string",
+            "allowedValues": [
+                "none",
+                "patch",
+                "rapid",
+                "stable",
+                "node-image"
+            ]
+        },
+        "adminGroupObjectIDs": {
+            "type": "array",
+            "defaultValue": ""
+        },
+        "azureRbac": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "disableLocalAccounts": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "enablePrivateCluster": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "isPrivateClusterSupported": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "enableAuthorizedIpRange": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "authorizedIPRanges": {
+            "defaultValue": [],
+            "type": "array"
+        },
+        "enableDiskEncryptionSetID": {
+            "defaultValue": false,
+            "type": "bool"
+        },
+        "diskEncryptionSetID": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "isAzurePolicySupported": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "enableAzurePolicy": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "isSecretStoreCSIDDriverSupported": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "enableSecretStoreCSIDriver": {
+            "type": "bool",
+            "defaultValue": false
+        },
+        "loadBalancerSku": {
+            "defaultValue": "Standard",
+            "type": "string",
+            "allowedValues": [
+                "Basic",
+                "Standard"
+            ]
+        },
+        "networkPolicy": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "networkPlugin": {
+            "defaultValue": "kubenet",
+            "type": "string",
+            "allowedValues": [
+                "azure",
+                "kubenet"
+            ]
+        },
+        "serviceCidr": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "dnsServiceIP": {
+            "defaultValue": "",
+            "type": "string"
+        },
+        "osDiskSizeGB": {
+            "type": "int",
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 1023
+        },
+        "nodeOSUpgradeChannel": {
+            "defaultValue": "NodeImage",
+            "type": "string",
+            "allowedValues": [
+                "None",
+                "Unmanaged",
+                "SecurityPatch",
+                "NodeImage"
+            ]
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "virtualNetworkName": {
+            "defaultValue": "vnet-z-cplus-p-001",
+            "type": "String"
+        },
+        "subnetName": {
+            "defaultValue": "sn-z-cplus-aks",
+            "type": "String"
+        },
+        "infraResourceGroupName": {
+            "defaultValue": "rg-z-cplus-infra-p-001",
+            "type": "String"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+            "name": "[concat(parameters('resourceName'),'/aksManagedAutoUpgradeSchedule')]",
+            "apiVersion": "2023-10-01",
+            "dependsOn": [
+                "[concat('Microsoft.ContainerService/managedClusters/', parameters('resourceName'))]"
+            ],
+            "properties": {
+                "maintenanceWindow": {
+                    "schedule": {
+                        "daily": null,
+                        "weekly": {
+                            "intervalWeeks": 1,
+                            "dayOfWeek": "Sunday"
+                        },
+                        "absoluteMonthly": null,
+                        "relativeMonthly": null
+                    },
+                    "durationHours": 4,
+                    "utcOffset": "-08:00",
+                    "startDate": "2024-02-20",
+                    "startTime": "00:00"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ContainerService/managedClusters/maintenanceConfigurations",
+            "name": "[concat(parameters('resourceName'),'/aksManagedNodeOSUpgradeSchedule')]",
+            "apiVersion": "2023-01-02-preview",
+            "dependsOn": [
+                "[concat('Microsoft.ContainerService/managedClusters/', parameters('resourceName'))]"
+            ],
+            "properties": {
+                "maintenanceWindow": {
+                    "nodeOSUpgradeChannel": "NodeImage",
+                    "schedule": {
+                        "weekly": {
+                            "intervalWeeks": 1,
+                            "dayOfWeek": "Sunday"
+                        }
+                    },
+                    "durationHours": 4,
+                    "utcOffset": "-08:00",
+                    "startDate": "2024-02-20",
+                    "startTime": "00:00"
+                }
+            }
+        },
+        {
+            "type": "Microsoft.ContainerService/managedClusters",
+            "apiVersion": "2023-10-01",
+            "sku": "[parameters('clusterSku')]",
+            "identity": "[parameters('clusterIdentity')]",
+            "dependsOn": [],
+            "location": "[parameters('location')]",
+            "name": "[parameters('resourceName')]",
+            "properties": {
+                "kubernetesVersion": "[parameters('kubernetesVersion')]",
+                "enableRBAC": "[parameters('enableRBAC')]",
+                "dnsPrefix": "[concat(parameters('resourceName'),'-dns')]",
+                "nodeResourceGroup": "[concat('MC_',parameters('infraResourceGroupName'),'_',parameters('resourceName'),'_centralus')]",
+                "disableLocalAccounts": "[parameters('disableLocalAccounts')]",
+                "aadProfile": "[if(parameters('enableAadProfile'), variables('defaultAadProfile'), null())]",
+                "autoUpgradeProfile": {
+                    "upgradeChannel": "[parameters('upgradeChannel')]",
+                    "nodeOSUpgradeChannel": "[parameters('nodeOSUpgradeChannel')]"
+                },
+                "agentPoolProfiles": [
+                    {
+                        "name": "nodepool1",
+                        "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+                        "count": 2,
+                        "enableAutoScaling": true,
+                        "minCount": 2,
+                        "maxCount": 5,
+                        "vmSize": "Standard_D2s_v5",
+                        "osType": "Linux",
+                        "osSKU": "Ubuntu",
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "System",
+                        "maxPods": 110,
+                        "availabilityZones": [
+                            "1",
+                            "2"
+                        ],
+                        "nodeLabels": {},
+                        "nodeTaints": [
+                            "CriticalAddonsOnly=true:NoSchedule"
+                        ],
+                        "enableNodePublicIP": false,
+                        "tags": "[parameters('tags')]",
+                        "vnetSubnetID": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                    },
+                    {
+                        "name": "nodepool2",
+                        "osDiskSizeGB": "[parameters('osDiskSizeGB')]",
+                        "count": 2,
+                        "enableAutoScaling": true,
+                        "minCount": 2,
+                        "maxCount": 5,
+                        "vmSize": "Standard_D2s_v5",
+                        "osType": "Linux",
+                        "osSKU": "Ubuntu",
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "User",
+                        "maxPods": 110,
+                        "availabilityZones": [
+                            "1",
+                            "2"
+                        ],
+                        "nodeLabels": {},
+                        "nodeTaints": [],
+                        "enableNodePublicIP": false,
+                        "tags": "[parameters('tags')]",
+                        "vnetSubnetID": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                    }
+                ],
+                "apiServerAccessProfile": "[if(parameters('isPrivateClusterSupported'), variables('defaultApiServerAccessProfile'), null())]",
+                "addonProfiles": {
+                    "azurepolicy": "[if(parameters('isAzurePolicySupported'), variables('defaultAzurePolicy'), null())]",
+                    "azureKeyvaultSecretsProvider": "[if(parameters('isSecretStoreCSIDDriverSupported'), variables('defaultSecrectStoreProvider'), null())]"
+                },
+                "diskEncryptionSetID": "[if(parameters('enableDiskEncryptionSetID'), parameters('diskEncryptionSetID'), null())]",
+                "networkProfile": {
+                    "loadBalancerSku": "[parameters('loadBalancerSku')]",
+                    "networkPlugin": "[parameters('networkPlugin')]",
+                    "networkPolicy": "[parameters('networkPolicy')]",
+                    "serviceCidr": "[parameters('serviceCidr')]",
+                    "dnsServiceIP": "[parameters('dnsServiceIP')]"
+                }
+            },
+            "tags": "[parameters('tags')]"
+        }
+        // {
+        //     "type": "Microsoft.Resources/deployments",
+        //     "name": "[concat('ClusterSubnetRoleAssignmentDeployment-',uniqueString(parameters('resourceName')))]",
+        //     "apiVersion": "2019-05-01",
+        //     "resourceGroup": "[parameters('infraResourceGroupName')]",
+        //     "subscriptionId": "[subscription().id]",
+        //     "dependsOn": [
+        //         "[concat('Microsoft.ContainerService/managedClusters/', parameters('resourceName'))]"
+        //     ],
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "template": {
+        //             "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+        //             "contentVersion": "1.0.0.0",
+        //             "parameters": {},
+        //             "variables": {},
+        //             "resources": [
+        //                 {
+        //                     "type": "Microsoft.Network/virtualNetworks/subnets/providers/roleAssignments",
+        //                     "apiVersion": "2018-09-01-preview",
+        //                     "name": "vnet-z-cplus-p-001/sn-z-cplus-aks/Microsoft.Authorization/3371ce75-aeb1-f086-c4f2-06d14d6230c3",
+        //                     "properties": {
+        //                         "roleDefinitionId": "[concat('/subscriptions/', subscription().subscriptionId, '/providers/Microsoft.Authorization/roleDefinitions/', '4d97b98b-1d4f-4787-a291-c67834d212e7')]",
+        //                         "principalId": "[reference(parameters('resourceName'),'2023-10-01','Full').identity.principalId]",
+        //                         "principalType": "ServicePrincipal",
+        //                         "scope": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Network/virtualNetworks/vnet-z-cplus-p-001/subnets/sn-z-cplus-aks"
+        //                     }
+        //                 }
+        //             ]
+        //         }
+        //     }
+        // }
+    ]
+}

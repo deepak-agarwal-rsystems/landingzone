@@ -1,0 +1,247 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "defaultValue": "vm-z-orad-n",
+            "type": "String"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "vmSize": {
+            "type": "String",
+            "defaultValue": "Standard_E4as_v5"
+        },
+        "numberOfInstances": {
+            "type": "int",
+            "defaultValue": 1
+        },
+        "networkInterfacesName": {
+            "defaultValue": "vm-z-orad-n-nic",
+            "type": "String"
+        },
+        "virtualNetworkName": {
+            "defaultValue": "vnet-z-cplus-n-001",
+            "type": "String"
+        },
+        "subnetName": {
+            "defaultValue": "sn-z-cplus-db",
+            "type": "String"
+        },
+        "sshKeyName": {
+            "type": "string",
+            "defaultValue": "ssh-z-cplus-cus-db-n-001"
+        },
+        "infraResourceGroupName": {
+            "defaultValue": "rg-z-cplus-infra-n-001",
+            "type": "String"
+        },
+         "galaryName":{
+            "type": "string",
+            "defaultValue":""
+        },
+        "imageName":{
+            "type": "string",
+            "defaultValue":""
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2023-03-01",
+            "name": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(2))]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "copy": {
+                "name": "virtualMachineLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(2)))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "additionalCapabilities": {
+                    "hibernationEnabled": false
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        // "publisher": "RedHat",
+                        // "offer": "RHEL",
+                        // "sku": "8-lvm-gen2",
+                        // "version": "latest"
+                        //"id": "/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/rg-z-cplus-infra-p-001/providers/Microsoft.Compute/galleries/gallery_z_cplus_db_p_001/images/vmimage-z-orad-p"
+                        "id": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Compute/galleries/images', parameters('galaryName'), parameters('imageName'))]"
+                    }
+                    // "osDisk": {
+                    //     "osType": "Linux",
+                    //     "name": "[format('{0}_{1}_{2:000}', parameters('virtualMachineName'), 'OsDisk', copyIndex(1))]",
+                    //     "createOption": "FromImage",
+                    //     "caching": "ReadWrite",
+                    //     "managedDisk": {
+                    //         "storageAccountType": "Premium_LRS"
+                    //     },
+                    //     "deleteOption": "Delete",
+                    //     "diskSizeGB": 128
+                    // },
+                    // "dataDisks": [
+                    //     {
+                    //         "lun": 0,
+                    //         "createOption": "Attach",
+                    //         "caching": "ReadOnly",
+                    //         "writeAcceleratorEnabled": false,
+                    //         "managedDisk": {
+                    //             "storageAccountType": "Premium_LRS",
+                    //             "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk1', copyIndex(1)))]"
+                    //         },
+                    //         "deleteOption": "Delete",
+                    //         "toBeDetached": false
+                    //     },
+                    //     {
+                    //         "lun": 1,
+                    //         "createOption": "Attach",
+                    //         "caching": "ReadOnly",
+                    //         "writeAcceleratorEnabled": false,
+                    //         "managedDisk": {
+                    //             "storageAccountType": "Premium_LRS",
+                    //             "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk2', copyIndex(1)))]"
+                    //         },
+                    //         "deleteOption": "Detach",
+                    //         "toBeDetached": false
+                    //     }
+                    // ],
+                    // "diskControllerType": "SCSI"
+                },
+                "osProfile": {
+                    "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(2))]",
+                    "adminUsername": "azureuser",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": true,
+                        "ssh": {
+                            "publicKeys": [
+                                {
+                                    "path": "/home/azureuser/.ssh/authorized_keys",
+                                    "keyData": "[reference(resourceId('Microsoft.Compute/sshPublicKeys',parameters('sshKeyName')),'2023-03-01').publicKey]"
+                                }
+                            ]
+                        },
+                        "provisionVMAgent": true,
+                        "patchSettings": {
+                            "patchMode": "ImageDefault",
+                            "assessmentMode": "ImageDefault"
+                        },
+                        "enableVMAgentPlatformUpdates": false
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true
+                },
+                // "securityProfile": {
+                //     "uefiSettings": {
+                //         "secureBootEnabled": true,
+                //         "vTpmEnabled": true
+                //     }
+                // },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(2)))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2023-04-01",
+            "copy": {
+                "name": "NetworkInterfaceLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "name": "[format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(2))]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "nicType": "Standard",
+                "auxiliaryMode": "None",
+                "auxiliarySku": "None"
+            }
+        }
+        // {
+        //     "type": "Microsoft.Compute/disks",
+        //     "apiVersion": "2018-06-01",
+        //     "copy": {
+        //         "name": "DataDiskLoop",
+        //         "count": "[parameters('numberOfInstances')]"
+        //     },
+        //     "name": "[format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk1', copyIndex(1))]",
+        //     "location": "[resourceGroup().location]",
+        //     "sku": {
+        //         "name": "Premium_LRS"
+        //     },
+        //     "properties": {
+        //         "creationData": {
+        //             "createOption": "Empty"
+        //         },
+        //         "diskSizeGB": 2048
+        //     }
+        // },
+        // {
+        //     "type": "Microsoft.Compute/disks",
+        //     "apiVersion": "2018-06-01",
+        //     "copy": {
+        //         "name": "DataDiskLoop",
+        //         "count": "[parameters('numberOfInstances')]"
+        //     },
+        //     "name": "[format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk2', copyIndex(1))]",
+        //     "location": "[resourceGroup().location]",
+        //     "sku": {
+        //         "name": "Premium_LRS"
+        //     },
+        //     "properties": {
+        //         "creationData": {
+        //             "createOption": "Empty"
+        //         },
+        //         "diskSizeGB": 2048
+        //     }
+        // }
+    ]
+}

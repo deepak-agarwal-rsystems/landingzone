@@ -1,0 +1,243 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "defaultValue": "vm-z-pent-p",
+            "type": "String"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "vmSize": {
+            "type": "String",
+            "defaultValue": "Standard_D8s_v5"
+        },
+        "numberOfInstances": {
+            "type": "int",
+            "defaultValue": 1
+        },
+        "networkInterfacesName": {
+            "defaultValue": "vm-z-pent-p-nic",
+            "type": "String"
+        },
+        "virtualNetworkName": {
+            "defaultValue": "vnet-z-cplus-p-001",
+            "type": "String"
+        },
+        "subnetName": {
+            "defaultValue": "sn-z-cplus-pent",
+            "type": "String"
+        },
+        "infraResourceGroupName": {
+            "defaultValue": "rg-z-cplus-infra-p-001",
+            "type": "String"
+        },
+        "galaryResourceGroupName": {
+            "defaultValue": "rg-z-cplus-infra-p-001",
+            "type": "String"
+        },
+        "galaryName": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "imageName": {
+            "type": "string",
+            "defaultValue": ""
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2023-03-01",
+            "name": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "copy": {
+                "name": "virtualMachineLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "dependsOn": [
+                "[concat('Microsoft.Network/networkInterfaces/', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1)))]",
+                "[concat('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk1', copyIndex(1)))]",
+                "[concat('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk2', copyIndex(1)))]"
+            ],
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "[parameters('vmSize')]"
+                },
+                "additionalCapabilities": {
+                    "hibernationEnabled": false
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter-smalldisk-g2",
+                        "version": "latest"
+                    },
+                    "osDisk": {
+                        "osType": "Windows",
+                        // "name": "[format('{0}_{1}_{2:000}', parameters('virtualMachineName'), 'OsDisk', copyIndex(1))]",
+                        "caching": "ReadWrite",
+                        "diskSizeGB": 256,
+
+                        "createOption": "fromImage",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "deleteOption": "Delete"
+                    },
+                    "dataDisks": [
+                         {
+                            "lun": 0,
+                            "createOption": "Attach",
+                            "caching": "ReadOnly",
+                            "writeAcceleratorEnabled": false,
+                            "managedDisk": {
+                                "storageAccountType": "Premium_LRS",
+                                "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk1', copyIndex(1)))]"
+                            },
+                            "deleteOption": "Delete",
+                            "toBeDetached": false
+                        },
+                        {
+                            "lun": 1,
+                            "createOption": "Attach",
+                            "caching": "ReadOnly",
+                            "writeAcceleratorEnabled": false,
+                            "managedDisk": {
+                                "storageAccountType": "Premium_LRS",
+                                "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk2', copyIndex(1)))]"
+                            },
+                            "deleteOption": "Delete",
+                            "toBeDetached": false
+                        }
+                    ],
+                    "diskControllerType": "SCSI"
+                },
+                "osProfile": {
+                    "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
+                    "adminUsername": "azureuser",
+                    "adminPassword": "Copeland@123",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true,
+                        "patchSettings": {
+                            "patchMode": "AutomaticByOS",
+                            "assessmentMode": "ImageDefault",
+                            "enableHotpatching": false
+                        },
+                        "enableVMAgentPlatformUpdates": false
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true
+                },
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    },
+                    "securityType": "TrustedLaunch"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1)))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2023-04-01",
+            "copy": {
+                "name": "NetworkInterfaceLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "name": "[format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1))]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "nicType": "Standard",
+                "auxiliaryMode": "None",
+                "auxiliarySku": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Compute/disks",
+            "apiVersion": "2018-06-01",
+            "copy": {
+                "name": "DataDiskLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "name": "[format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk1', copyIndex(1))]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium_LRS"
+            },
+            "properties": {
+                "creationData": {
+                    "createOption": "Empty"
+                },
+                "diskSizeGB": 100
+            }
+        },
+        {
+            "type": "Microsoft.Compute/disks",
+            "apiVersion": "2018-06-01",
+            "copy": {
+                "name": "DataDiskLoop",
+                "count": "[parameters('numberOfInstances')]"
+            },
+            "name": "[format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk2', copyIndex(1))]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium_LRS"
+            },
+            "properties": {
+                "creationData": {
+                    "createOption": "Empty"
+                },
+                "diskSizeGB": 4096
+            }
+        }
+    ]
+}

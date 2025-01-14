@@ -1,0 +1,58 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "publicIPAddressesName": {
+            "defaultValue": [ "default" ],
+            "type": "array"
+        },
+         "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+         "sku": {
+            "type": "String",
+            "defaultValue": "Standard"
+        },
+         "tier": {
+            "type": "String",
+            "defaultValue": "Regional"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "copy":{
+                "name":"NSGLoop",
+                "count":"[length(parameters('publicIPAddressesName'))]"
+            },
+            "type": "Microsoft.Network/publicIPAddresses",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('publicIPAddressesName')[copyIndex()]]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "sku": {
+                "name": "[parameters('sku')]",
+                "tier": "[parameters('tier')]"
+            },
+            "properties": {
+                "publicIPAddressVersion": "IPv4",
+                "publicIPAllocationMethod": "Static",
+                "idleTimeoutInMinutes": 4,
+                "ipTags": [],
+                "ddosSettings": {
+                    "protectionMode": "VirtualNetworkInherited"
+                },
+                "dnsSettings":{
+                    "domainNameLabel": "[parameters('publicIPAddressesName')[copyIndex()]]"
+                }
+            }
+        }
+    ]
+}

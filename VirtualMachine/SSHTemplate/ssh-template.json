@@ -1,0 +1,36 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "sshKeyName": {
+            "type": "string",
+            "defaultValue": "ssh_key_name"
+        },
+        "sshPublicKeyValue": {
+            "type": "string",
+            "defaultValue": ""
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "centralus"
+        }
+    },
+    "resources": [
+        {            
+            "type": "Microsoft.Compute/sshPublicKeys",
+            "apiVersion": "2023-03-01",
+            "name": "[parameters('sshKeyName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "properties": {
+                "publicKey": "[parameters('sshPublicKeyValue')]"
+            }
+        }
+    ]
+}

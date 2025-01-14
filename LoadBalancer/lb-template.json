@@ -1,0 +1,105 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "loadBalancersName": {
+            "defaultValue": "ilb-z-cplus-ai-n-001",
+            "type": "String"
+        },
+        "virtualNetworksName": {
+            "defaultValue": "vnet-z-cplus-n-001",
+            "type": "String"
+        },
+        "subNetName": {
+            "defaultValue": "sn-z-cplus-infra",
+            "type": "String"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+        "skuName": {
+            "type": "string",
+            "defaultValue": "Standard"
+        },
+        "skuTier": {
+            "type": "string",
+            "defaultValue": "Regional"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/loadBalancers",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('loadBalancersName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "sku": {
+                "name": "[parameters('skuName')]",
+                "tier": "[parameters('skuTier')]"
+            },
+            "properties": {
+                "frontendIPConfigurations": [
+                    {
+                        "properties": {
+                            "subnet": {
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworksName'), parameters('subnetName'))]"
+                            },
+                            "privateIPAddress": "10.195.64.50",
+                            "privateIPAllocationMethod": "Static"
+                        },
+                        "name": "LoadBalancerFrontend"
+                    }
+
+                ],
+                "backendAddressPools": [
+                    {
+                        "name": "BackendPool1"
+                    }
+                ],
+                "loadBalancingRules": [
+                    {
+                        "properties": {
+                            "frontendIPConfiguration": {
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', parameters('loadBalancersName'), 'LoadBalancerFrontend')]"
+                            },
+                            "backendAddressPool": {
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancersName'), 'BackendPool1')]"
+                            },
+                            "probe": {
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/probes', parameters('loadBalancersName'), 'lbprobe')]"
+                            },
+                            "protocol": "Tcp",
+                            "frontendPort": 80,
+                            "backendPort": 80,
+                            "idleTimeoutInMinutes": 15
+                        },
+                        "name": "lbrule"
+                    }
+                ],
+                "probes": [
+                    {
+                        "properties": {
+                            "protocol": "Tcp",
+                            "port": 80,
+                            "intervalInSeconds": 15,
+                            "numberOfProbes": 2
+                        },
+                        "name": "lbprobe"
+                    }
+
+                ],
+                "inboundNatRules": [],
+                "outboundRules": [],
+                "inboundNatPools": []
+            }
+        }
+    ]
+}

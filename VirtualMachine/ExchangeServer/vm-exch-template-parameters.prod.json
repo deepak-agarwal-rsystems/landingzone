@@ -1,0 +1,24 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "value": "vm-z-exch-p"
+        },
+        "vmSize": {
+            "value": "Standard_D8s_v4"
+        },
+        "networkInterfacesName": {
+            "value": "vm-z-exch-p-nic"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplusgw-p-001"
+        },
+        "subnetName": {
+            "value": "sn-z-cplus-infragw"
+        },
+        "infraResourceGroupName": {
+            "value": "rg-z-cplus-gw-p-001"
+        }
+    }
+}

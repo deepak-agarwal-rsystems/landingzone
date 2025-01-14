@@ -1,0 +1,135 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachines_vmzpalopasr01_name": {
+            "defaultValue": "vmzpalopasr01",
+            "type": "String"
+        },
+        "networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name": {
+			"defaultValue": "/subscriptions/60c3c17c-5651-48a9-a7a0-5150fd722862/resourceGroups/rg-z-cplusgw-palo-asr-p-001/providers/Microsoft.Network/networkInterfaces/vmzpalopasr01-cpluspaloasr01-vpn1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name": {
+			"defaultValue": "/subscriptions/60c3c17c-5651-48a9-a7a0-5150fd722862/resourceGroups/rg-z-cplusgw-palo-asr-p-001/providers/Microsoft.Network/networkInterfaces/vmzpalopasr01-cpluspaloasr01-mgmt1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_trust1_name": {
+			"defaultValue": "/subscriptions/60c3c17c-5651-48a9-a7a0-5150fd722862/resourceGroups/rg-z-cplusgw-palo-asr-p-001/providers/Microsoft.Network/networkInterfaces/vmzpalopasr01-cpluspaloasr01-trust1",
+			"type": "String"
+		},
+		"networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name": {
+			"defaultValue": "/subscriptions/60c3c17c-5651-48a9-a7a0-5150fd722862/resourceGroups/rg-z-cplusgw-palo-asr-p-001/providers/Microsoft.Network/networkInterfaces/vmzpalopasr01-cpluspaloasr01-untrust1",
+			"type": "String"
+		}
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Compute/virtualMachines",
+            "apiVersion": "2024-07-01",
+            "name": "[parameters('virtualMachines_vmzpalopasr01_name')]",
+            "location": "eastus2",
+            "tags": {
+                "Cost Center": "ERS (1108)",
+                "CreatedOnDate": "2024-06-03T16:37:04.2859236Z",
+                "IAASType": "Virtual Machine",
+                "Provision Type": "Migrated",
+                "All the statuses of asset In use, In stock etc.": "TBD",
+                "Application ID": "TBD",
+                "Assigned to": "TBD",
+                "Assignment group": "TBD",
+                "Cost": "TBD",
+                "Criticality": "TBD",
+                "Data Sensitivity": "TBD",
+                "Description": "TBD",
+                "Edition": "TBD",
+                "Environment": "TBD",
+                "Fully qualified Domain Name": "TBD",
+                "Group of people managing application": "TBD",
+                "IP address": "TBD",
+                "Location": "TBD",
+                "Managed by person's name": "TBD",
+                "Notes": "TBD",
+                "Operational status": "TBD",
+                "Vendor": "TBD"
+            },
+            "plan": {
+                "name": "bundle1",
+                "product": "vmseries-flex",
+                "publisher": "paloaltonetworks"
+            },
+            "properties": {
+                "hardwareProfile": {
+                    "vmSize": "Standard_D3_v2"
+                },
+                "storageProfile": {
+                    "imageReference": {
+                        "publisher": "paloaltonetworks",
+                        "offer": "vmseries-flex",
+                        "sku": "bundle1",
+                        "version": "10.1.0"
+                    },
+                    "osDisk": {
+                        "osType": "Linux",
+                        "name": "[concat(parameters('virtualMachines_vmzpalopasr01_name'), '_OsDisk_1_f1fe70bb5e914c238b99a879e2fb4d99')]",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "deleteOption": "Detach",
+                        "diskSizeGB": 60
+                    },
+                    "dataDisks": []
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachines_vmzpalopasr01_name')]",
+                    "adminUsername": "paloadmin",
+                    "adminPassword": "hUysT78tH$R65uI",
+                    "linuxConfiguration": {
+                        "disablePasswordAuthentication": false,
+                        "provisionVMAgent": true,
+                        "patchSettings": {
+                            "patchMode": "ImageDefault",
+                            "assessmentMode": "ImageDefault"
+                        },
+						"enableVMAgentPlatformUpdates": false
+                    },
+                    "secrets": [],
+                    "allowExtensionOperations": true
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_mgmt1_name')]",
+                            "properties": {
+                                "primary": true
+                            }
+                        },
+                        {
+                            "id": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_untrust1_name')]",
+                            "properties": {
+                                "primary": false
+                            }
+                        },
+                        {
+                            "id": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_trust1_name')]",
+                            "properties": {
+                                "primary": false
+                            }
+                        },
+                        {
+                            "id": "[parameters('networkInterfaces_vmzpalop001_cpluspalo001_vpn1_name')]",
+                            "properties": {
+                                "primary": false
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
+                }
+            }
+        }
+    ]
+}

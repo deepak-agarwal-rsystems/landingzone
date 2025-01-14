@@ -1,0 +1,15 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "tags": {
+            "value": {
+                "Cost Center": "1108-300-8602",
+                "Environment": "Dev"
+            }
+        },
+        "location":{
+            "value": "centralus"
+        }
+    }
+}

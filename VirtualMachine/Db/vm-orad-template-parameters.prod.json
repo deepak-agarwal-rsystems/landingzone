@@ -1,0 +1,30 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualMachineName": {
+            "value": "vm-z-orad-p"
+        },
+        "vmSize": {
+            "value": "Standard_E8as_v5"
+        },
+        "numberOfInstances": {
+            "value": 1
+        },
+        "networkInterfacesName": {
+            "value": "vm-z-orad-p-nic"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplus-p-001"
+        },
+        "subnetName": {
+            "value": "sn-z-cplus-db"
+        },
+        "galaryName":{
+            "value":"gallery_z_cplus_db_p_001"
+        },
+        "imageName":{
+            "value":"vmimage-z-orad-p"
+        }
+    }
+}

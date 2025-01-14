@@ -1,0 +1,21 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "applicationGatewaysName": {
+            "value": "ag-z-cplus-gw-n-001"
+        },
+        "virtualNetworkName": {
+            "value": "vnet-z-cplusgw-n-001"
+        },
+        "subNetName": {
+            "value": "sn-z-cplus-appgateway"
+        },
+        "publicIPAddressesName": {
+            "value": "pip-z-cop-cus-cplus1-001"
+        },
+        "sku": {
+            "value": "Standard_v2"
+        }
+    }
+}
