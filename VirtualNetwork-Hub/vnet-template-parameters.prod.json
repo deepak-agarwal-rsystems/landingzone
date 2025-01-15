@@ -2,9 +2,9 @@
     "$schema":  "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
     "contentVersion":  "1.0.0.0",
     "parameters":  {
-                       "virtualNetworkName":  {
-                                                  "value":  "vnet-z-cplus-hub-p-001"
-                                              },
+                       "hubVirtualNetworkName":  {
+                                                     "value":  "vnet-z-cplus-hub-p-001"
+                                                 },
                        "hubVNetAddressPrefixes":  {
                                                       "value":  [
                                                                     "10.195.72.0/22",

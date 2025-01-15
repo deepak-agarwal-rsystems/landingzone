@@ -6,7 +6,7 @@
             "type": "String",
             "defaultValue": "centralus"
         },
-        "virtualNetworkName": {
+        "hubVirtualNetworkName": {
             "defaultValue": "myVnet",
             "type": "String"
         },
@@ -53,7 +53,7 @@
         {
             "type": "Microsoft.Network/virtualNetworks",
             "apiVersion": "2021-05-01",
-            "name": "[parameters('virtualNetworkName')]",
+            "name": "[parameters('hubVirtualNetworkName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {

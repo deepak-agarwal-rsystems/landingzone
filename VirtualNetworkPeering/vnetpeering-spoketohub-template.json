@@ -1,0 +1,60 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "hubVnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Hub Virtual Network."
+      }
+    },
+    "spokeVnetName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Spoke Virtual Network."
+      }
+    },
+    "hubToSpokePeeringName": {
+      "type": "string",
+      "defaultValue": "HubToSpokePeering",
+      "metadata": {
+        "description": "Name of the peering from Hub to Spoke."
+      }
+    },
+    "spokeToHubPeeringName": {
+      "type": "string",
+      "defaultValue": "SpokeToHubPeering",
+      "metadata": {
+        "description": "Name of the peering from Spoke to Hub."
+      }
+    },
+    "hubResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Hub Resource Group."
+      }
+    },
+    "spokeResourceGroupName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Spoke Resource Group."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
+      "apiVersion": "2021-05-01",
+      "name": "[concat(parameters('hubVnetName'), '/', parameters('hubToSpokePeeringName'))]",
+      "properties": {
+        "allowVirtualNetworkAccess": true,
+        "allowForwardedTraffic": true,
+        "allowGatewayTransit": false,
+        "useRemoteGateways": false,
+        "remoteVirtualNetwork": {
+          "id": "[resourceId(parameters('spokeResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('spokeVnetName'))]"
+        }
+      }
+    }
+  ]
+}

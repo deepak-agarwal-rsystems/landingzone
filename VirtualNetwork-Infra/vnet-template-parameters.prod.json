@@ -1,381 +1,48 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "virtualNetworkName": {
-            "value": "vnet-z-cplus-p-001"
-        },
-        "addressPrefixes": {
-            "value": [
-                "10.195.64.0/21"
-            ]
-        },
-        "subnetsData": {
-            "value": [
-                {
-                    "name": "sn-z-cplus-infra",
-                    "addressPrefixes": [
-                        "10.195.64.0/25"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "defaultOutboundAccess": true,
-                    "nsgName": "nsg-z-cplus-infra-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-db",
-                    "addressPrefixes": [
-                        "10.195.65.0/26"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "defaultOutboundAccess": true,
-                    "nsgName": "nsg-z-cplus-db-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-ai",
-                    "addressPrefixes": [
-                        "10.195.65.64/27"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "defaultOutboundAccess": true,
-                    "nsgName": "nsg-z-cplus-ai-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-migration",
-                    "addressPrefixes": [
-                        "10.195.65.128/25"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-migration-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-aks",
-                    "addressPrefixes": [
-                        "10.195.70.0/23"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": ""
-                },
-                {
-                    "name": "sn-z-cplus-publ",
-                    "addressPrefixes": [
-                        "10.195.67.0/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-publ-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-groc",
-                    "addressPrefixes": [
-                        "10.195.67.8/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-groc-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-cole",
-                    "addressPrefixes": [
-                        "10.195.67.16/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-cole-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-amaz",
-                    "addressPrefixes": [
-                        "10.195.67.24/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-amaz-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-amsk",
-                    "addressPrefixes": [
-                        "10.195.67.32/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-amsk-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-meij",
-                    "addressPrefixes": [
-                        "10.195.67.40/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-meij-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-whol",
-                    "addressPrefixes": [
-                        "10.195.67.48/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-whol-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-waca",
-                    "addressPrefixes": [
-                        "10.195.67.56/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-waca-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-cobo",
-                    "addressPrefixes": [
-                        "10.195.67.64/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-cobo-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-emrl",
-                    "addressPrefixes": [
-                        "10.195.67.72/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-emrl-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-huss",
-                    "addressPrefixes": [
-                        "10.195.67.80/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-huss-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-sdco",
-                    "addressPrefixes": [
-                        "10.195.67.88/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-sdco-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-dscl",
-                    "addressPrefixes": [
-                        "10.195.67.96/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-dscl-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-burg",
-                    "addressPrefixes": [
-                        "10.195.67.104/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-burg-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-pens",
-                    "addressPrefixes": [
-                        "10.195.67.112/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-pens-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-bran",
-                    "addressPrefixes": [
-                        "10.195.67.120/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-bran-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-star",
-                    "addressPrefixes": [
-                        "10.195.67.128/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-star-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-nsgs",
-                    "addressPrefixes": [
-                        "10.195.67.136/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-nsgs-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-plum",
-                    "addressPrefixes": [
-                        "10.195.67.144/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-plum-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-sulo",
-                    "addressPrefixes": [
-                        "10.195.67.152/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-sulo-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-foli",
-                    "addressPrefixes": [
-                        "10.195.67.200/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-foli-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-demo",
-                    "addressPrefixes": [
-                        "10.195.68.136/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-demo-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-aldi",
-                    "addressPrefixes": [
-                        "10.195.67.160/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-aldi-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-atsi",
-                    "addressPrefixes": [
-                        "10.195.67.168/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-atsi-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-brin",
-                    "addressPrefixes": [
-                        "10.195.67.176/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-brin-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-casa",
-                    "addressPrefixes": [
-                        "10.195.67.184/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-casa-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-heli",
-                    "addressPrefixes": [
-                        "10.195.68.0/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-heli-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-waus",
-                    "addressPrefixes": [
-                        "10.195.68.144/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-waus-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-pent",
-                    "addressPrefixes": [
-                        "10.195.65.96/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-pent-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-hans",
-                    "addressPrefixes": [
-                        "10.195.67.232/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-hans-p-001"
-                },
-                {
-                    "name": "sn-z-cplus-stva",
-                    "addressPrefixes": [
-                        "10.195.68.96/29"
-                    ],
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "nsgName": "nsg-z-cplus-stva-p-001"
-                }
-            ]
-        }
-    }
+    "$schema":  "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+    "contentVersion":  "1.0.0.0",
+    "parameters":  {
+                       "spokeVirtualNetworkName":  {
+                                                       "value":  "vnet-z-cplus-spoke-p-001"
+                                                   },
+                       "spokeVNetAddressPrefixes":  {
+                                                        "value":  [
+                                                                      "10.195.64.0/21"
+                                                                  ]
+                                                    },
+                       "subnetsData":  {
+                                           "value":  [
+                                                         {
+                                                             "name":  "sn-z-cplus-infra",
+                                                             "addressPrefixes":  "10.195.64.0/24",
+                                                             "delegations":  [
+
+                                                                             ],
+                                                             "privateEndpointNetworkPolicies":  "Disabled",
+                                                             "privateLinkServiceNetworkPolicies":  "Enabled",
+                                                             "defaultOutboundAccess":  true
+                                                         },
+                                                         {
+                                                             "name":  "sn-z-cplus-web",
+                                                             "addressPrefixes":  "10.195.65.0/28",
+                                                             "delegations":  [
+
+                                                                             ],
+                                                             "privateEndpointNetworkPolicies":  "Disabled",
+                                                             "privateLinkServiceNetworkPolicies":  "Enabled",
+                                                             "defaultOutboundAccess":  true
+                                                         },
+                                                         {
+                                                             "name":  "sn-z-cplus-db",
+                                                             "addressPrefixes":  "10.195.65.16/28",
+                                                             "delegations":  [
+
+                                                                             ],
+                                                             "privateEndpointNetworkPolicies":  "Disabled",
+                                                             "privateLinkServiceNetworkPolicies":  "Enabled",
+                                                             "defaultOutboundAccess":  true
+                                                         }
+                                                     ]
+                                       }
+                   }
 }

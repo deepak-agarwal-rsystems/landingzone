@@ -10,8 +10,15 @@ $location = "centralus"
 $applicationName = "cplus"
 $costCenterCode = "1108-300-8602"
 
+# Tags parameters
+$tags = @{"Environment" = $environment; "application" = $applicationName; "Cost Center Code" = $costCenterCode; }
+
+# Resource Group parameters
+$rgHubName = "rg-z-$applicationName-hub-p-001"
+$rgSpokeName = "rg-z-$applicationName-spoke-p-001"
+
 # Hub Virtual Network parameters
-$virtualNetworkName = "vnet-z-$applicationName-hub-p-001"
+$hubVirtualNetworkName = "vnet-z-$applicationName-hub-p-001"
 $appGatewaySubnetName = "sn-z-$applicationName-appgateway"
 $hubResourceSubnetName = "sn-z-$applicationName-hubresource"
 $hubVNetAddressPrefixes = @("10.195.72.0/22", "10.195.78.0/23")
@@ -20,19 +27,26 @@ $bastionSubnetAddressPrefix = "10.195.73.0/26"
 $appGatewaySubnetAddressPrefix = "10.195.73.64/26"
 $hubResourceSubnetAddressPrefix = "10.195.74.0/24"
 
-# Calculated parameters
-$tags = @{"Environment" = $environment; "application" = $applicationName; "Cost Center Code" = $costCenterCode; }
+# Spoke Virtual Network parameters
+$spokeVirtualNetworkName = "vnet-z-$applicationName-spoke-p-001"
+$spokeVNetAddressPrefixes = @("10.195.64.0/21")
+$spokeInfraSubnetName = "sn-z-$applicationName-infra"
+$webResourceSubnetName = "sn-z-$applicationName-web"
+$dbResourceSubnetName = "sn-z-$applicationName-db"
+$spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
+$webResourceSubnetAddressPrefix = "10.195.65.0/28"
+$dbResourceSubnetAddressPrefix = "10.195.65.16/28"
 
-# Global Parameters
+# Prepare Parameter Files
 & "./UpdateParameterFiles.ps1"
+
+# Get Global Parameter File
 $globalParameterFile = "./global-parameters.$environment.json"
 
 #================================================================================
 # Resource Groups
 
 # Deploy the Hub Resource Group
-$rgHubName = "rg-z-$applicationName-hub-p-001"
-
 $templateFile = "./ResourceGroup/resourcegroup-template.json"
 # az deployment sub create `
 #    --location $location `
@@ -40,9 +54,6 @@ $templateFile = "./ResourceGroup/resourcegroup-template.json"
 #    --parameters $globalParameterFile name=$rgHubName
 
 # Deploy the Spoke Resource Group
-$rgSpokeName = "rg-z-$applicationName-spoke-p-001"
-
-# Deploy the Infra Resource Group
 $templateFile = "./ResourceGroup/resourcegroup-template.json"
 # az deployment sub create `
 #    --location $location `
@@ -60,10 +71,26 @@ $templateParameterFile = "./VirtualNetwork-Hub/vnet-template-parameters.$environ
 #    --template-file $templateFile `
 #    --parameters $templateParameterFile $globalParameterFile
 
-# Deploy Infra Virtual Network
+# Deploy Spoke Virtual Network
 $templateFile = "./VirtualNetwork-Infra/vnet-template.json"
 $templateParameterFile = "./VirtualNetwork-Infra/vnet-template-parameters.$environment.json"
+# az deployment group create `
+#    --resource-group $rgSpokeName `
+#    --template-file $templateFile `
+#    --parameters $templateParameterFile $globalParameterFile
+
+# Peer Hub to Spoke Virtual Network
+$templateFile = "./VirtualNetworkPeering/vnetpeering-hubtospoke-template.json"
+$templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
 az deployment group create `
-   --resource-group $rgInfraName `
+   --resource-group $rgSpokeName `
    --template-file $templateFile `
-   --parameters $templateParameterFile $globalParameterFile
+   --parameters $templateParameterFile
+
+# Peer Spoke to Hub Virtual Network
+$templateFile = "./VirtualNetworkPeering/vnetpeering-spoketohub-template.json"
+$templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
+az deployment group create `
+   --resource-group $rgHubName `
+   --template-file $templateFile `
+   --parameters $templateParameterFile
