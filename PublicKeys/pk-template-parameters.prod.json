@@ -1,15 +1,19 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "publicIPAddressesName": {
-            "value": [ "pip-z-cplus-ag-p-001", "pip-z-cplus-api-p-001", "pip-z-cplus-bastion-p-001", "pip-z-cplus-fw-p-001", "pip-z-cplus-gw-p-001" ]
-        },
-        "sku": {
-            "value": "Standard"
-        },
-        "tier": {
-            "value": "Regional"
-        }
-    }
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion":  "1.0.0.0",
+    "parameters":  {
+                       "publicIPAddressesNames":  {
+                                                      "value":  [
+                                                                    "pip-z-cplus-ag-p-001",
+                                                                    "pip-z-cplus-bastion-p-001",
+                                                                    "pip-z-cplus-gw-p-001"
+                                                                ]
+                                                  },
+                       "sku":  {
+                                   "value":  "Standard"
+                               },
+                       "tier":  {
+                                    "value":  "Regional"
+                                }
+                   }
 }

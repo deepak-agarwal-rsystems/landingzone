@@ -2,15 +2,15 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "virtualNetworkGatewaysName": {
+        "virtualNetworkGatewayName": {
             "defaultValue": "gw-z-cplus-infra-n-001",
             "type": "String"
         },
-        "publicIPAddressesName": {
+        "publicIPAddressName": {
             "defaultValue": "pip-z-cplus-gw-n-001",
             "type": "String"
         },
-        "virtualNetworksName": {
+        "virtualNetworkName": {
             "defaultValue": "vnet-z-cplus-n-001",
             "type": "String"
         },
@@ -38,7 +38,7 @@
         {
             "type": "Microsoft.Network/virtualNetworkGateways",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('virtualNetworkGatewaysName')]",
+            "name": "[parameters('virtualNetworkGatewayName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {
@@ -46,14 +46,14 @@
                 "ipConfigurations": [
                     {
                         "name": "default",
-                        "id": "[concat(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('virtualNetworkGatewaysName')), '/ipConfigurations/default')]",
+                        "id": "[concat(resourceId('Microsoft.Network/virtualNetworkGateways', parameters('virtualNetworkGatewayName')), '/ipConfigurations/default')]",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressesName'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
                             },
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworksName'), parameters('subnetName'))]"
+                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
                             }
                         }
                     }

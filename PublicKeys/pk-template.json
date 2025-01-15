@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "publicIPAddressesName": {
+        "publicIPAddressesNames": {
             "defaultValue": [ "default" ],
             "type": "array"
         },
@@ -29,12 +29,12 @@
     "resources": [
         {
             "copy":{
-                "name":"NSGLoop",
-                "count":"[length(parameters('publicIPAddressesName'))]"
+                "name":"PIPLoop",
+                "count":"[length(parameters('publicIPAddressesNames'))]"
             },
             "type": "Microsoft.Network/publicIPAddresses",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('publicIPAddressesName')[copyIndex()]]",
+            "name": "[parameters('publicIPAddressesNames')[copyIndex()]]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "sku": {
@@ -50,7 +50,7 @@
                     "protectionMode": "VirtualNetworkInherited"
                 },
                 "dnsSettings":{
-                    "domainNameLabel": "[parameters('publicIPAddressesName')[copyIndex()]]"
+                    "domainNameLabel": "[parameters('publicIPAddressesNames')[copyIndex()]]"
                 }
             }
         }

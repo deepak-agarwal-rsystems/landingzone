@@ -37,6 +37,12 @@ $spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
 $webResourceSubnetAddressPrefix = "10.195.65.0/28"
 $dbResourceSubnetAddressPrefix = "10.195.65.16/28"
 
+# Public IP parameters
+$publicIPAddressesNames = @("pip-z-$applicationName-ag-p-001", "pip-z-$applicationName-bastion-p-001", "pip-z-$applicationName-gw-p-001")
+
+# VPN Gateway parameters
+$virtualNetworkGatewayName = "vpngw-z-$applicationName-hub-p-001"
+
 # Prepare Parameter Files
 & "./UpdateParameterFiles.ps1"
 
@@ -82,15 +88,37 @@ $templateParameterFile = "./VirtualNetwork-Infra/vnet-template-parameters.$envir
 # Peer Hub to Spoke Virtual Network
 $templateFile = "./VirtualNetworkPeering/vnetpeering-hubtospoke-template.json"
 $templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
-az deployment group create `
-   --resource-group $rgSpokeName `
-   --template-file $templateFile `
-   --parameters $templateParameterFile
+# az deployment group create `
+#    --resource-group $rgSpokeName `
+#    --template-file $templateFile `
+#    --parameters $templateParameterFile
 
 # Peer Spoke to Hub Virtual Network
 $templateFile = "./VirtualNetworkPeering/vnetpeering-spoketohub-template.json"
 $templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
+# az deployment group create `
+#    --resource-group $rgHubName `
+#    --template-file $templateFile `
+#    --parameters $templateParameterFile
+
+#================================================================================
+# Public IPs
+
+# Deploy the public IPs address
+$templateFile = "./PublicKeys/pk-template.json"
+$templateParameterFile = "./PublicKeys/pk-template-parameters.$environment.json"
 az deployment group create `
    --resource-group $rgHubName `
    --template-file $templateFile `
-   --parameters $templateParameterFile
+   --parameters $templateParameterFile $globalParameterFile
+
+#================================================================================
+# Virtual Network Gateways
+
+# Deploy the Virtual Network Gateway
+$templateFile = "./VPNGateway/vpngw-template.json"
+$templateParameterFile = "./VPNGateway/vpngw-template-parameters.$environment.json"
+az deployment group create `
+   --resource-group $rgHubName `
+   --template-file $templateFile `
+   --parameters $templateParameterFile $globalParameterFile

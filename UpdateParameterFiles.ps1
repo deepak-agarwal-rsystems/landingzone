@@ -75,3 +75,34 @@ $paramContent.parameters.spokeResourceGroupName.value = $rgSpokeName
 
 # Save the updated parameter file back to disk
 $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+#====================================================================================
+# Update public IPs parameter file
+
+# Path to the parameter file
+$parameterFilePath = "./PublicKeys/pk-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.publicIPAddressesNames.value = $publicIPAddressesNames
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+
+#====================================================================================
+# Update VPN Gateway parameter file
+
+# Path to the parameter file
+$parameterFilePath = "./VPNGateway/vpngw-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.virtualNetworkGatewayName.value = $virtualNetworkGatewayName
+$paramContent.parameters.publicIPAddressName.value = $publicIPAddressesNames[2]
+$paramContent.parameters.virtualNetworkName.value = $hubVirtualNetworkName
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath

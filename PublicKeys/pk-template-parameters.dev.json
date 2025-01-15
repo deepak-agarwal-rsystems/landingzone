@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "publicIPAddressesName": {
+        "publicIPAddressesNames": {
             "value": [ "pip-z-cplus-ag-n-001", "pip-z-cplus-api-n-001", "pip-z-cplus-bastion-n-001", "pip-z-cplus-fw-n-001", "pip-z-cplus-gw-n-001" ]
         },
         "sku": {
