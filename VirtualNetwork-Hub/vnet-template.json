@@ -16,21 +16,35 @@
             },
             "type": "Object"
         },
-        "addressPrefixes": {
+        "hubVNetAddressPrefixes": {
             "defaultValue": [
                 "10.1.0.0/16"
             ],
             "type": "Array"
         },
-        "subnets": {
-            "defaultValue": [
-                {
-                    "name": "default",
-                    "addressPrefix": "10.1.0.0/24",
-                    "nsgName": ""
-                }
-            ],
-            "type": "Array"
+        "appGatewaySubnetName": {
+            "defaultValue": "AppGatewaySubnet",
+            "type": "String"
+        },
+        "hubResourceSubnetName": {
+            "defaultValue": "HubResourceSubnet",
+            "type": "String"
+        },
+        "gatewaySubnetAddressPrefix": {
+            "defaultValue": "10.1.1.0/24",
+            "type": "String"
+        },
+        "bastionSubnetAddressPrefix": {
+            "defaultValue": "10.1.2.0/26",
+            "type": "String"
+        },
+        "appGatewaySubnetAddressPrefix": {
+            "defaultValue": "10.1.3.0/26",
+            "type": "String"
+        },
+        "hubResourceSubnetAddressPrefix": {
+            "defaultValue": "10.1.4.0/24",
+            "type": "String"
         }
     },
     "variables": {
@@ -44,73 +58,43 @@
             "tags": "[parameters('tags')]",
             "properties": {
                 "addressSpace": {
-                    "addressPrefixes": "[parameters('addressPrefixes')]"
+                    "addressPrefixes": "[parameters('hubVNetAddressPrefixes')]"
                 },
                 "subnets": [
                     {
-                        "name": "[parameters('subnets')[0].name]",
+                        "name": "GatewaySubnet",
                         "properties": {
-                            "addressPrefixes": "[parameters('subnets')[0].properties.addressPrefixes]",
-                            "delegations": "[parameters('subnets')[0].properties.delegations]",
-                            "privateEndpointNetworkPolicies": "[parameters('subnets')[0].properties.privateEndpointNetworkPolicies]",
-                            "privateLinkServiceNetworkPolicies": "[parameters('subnets')[0].properties.privateLinkServiceNetworkPolicies]"
+                            "addressPrefix": "[parameters('gatewaySubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
                         }
                     },
                     {
-                        "name": "[parameters('subnets')[1].name]",
+                        "name": "AzureBastionSubnet",
                         "properties": {
-                            "addressPrefixes": "[parameters('subnets')[1].properties.addressPrefixes]",
-                            "delegations": "[parameters('subnets')[1].properties.delegations]",
-                            "privateEndpointNetworkPolicies": "[parameters('subnets')[1].properties.privateEndpointNetworkPolicies]",
-                            "privateLinkServiceNetworkPolicies": "[parameters('subnets')[1].properties.privateLinkServiceNetworkPolicies]"
+                            "addressPrefix": "[parameters('bastionSubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
                         }
                     },
                     {
-                        "name": "[parameters('subnets')[2].name]",
+                        "name": "[parameters('appGatewaySubnetName')]",
                         "properties": {
-                            "addressPrefixes": "[parameters('subnets')[2].properties.addressPrefixes]",
-                            "delegations": "[parameters('subnets')[2].properties.delegations]",
-                            "privateEndpointNetworkPolicies": "[parameters('subnets')[2].properties.privateEndpointNetworkPolicies]",
-                            "privateLinkServiceNetworkPolicies": "[parameters('subnets')[2].properties.privateLinkServiceNetworkPolicies]",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('subnets')[2].nsgName)]"
-                            }
+                            "addressPrefix": "[parameters('appGatewaySubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
                         }
                     },
                     {
-                        "name": "[parameters('subnets')[3].name]",
+                        "name": "[parameters('hubResourceSubnetName')]",
                         "properties": {
-                            "addressPrefixes": "[parameters('subnets')[3].properties.addressPrefixes]",
-                            "delegations": "[parameters('subnets')[3].properties.delegations]",
-                            "privateEndpointNetworkPolicies": "[parameters('subnets')[3].properties.privateEndpointNetworkPolicies]",
-                            "privateLinkServiceNetworkPolicies": "[parameters('subnets')[3].properties.privateLinkServiceNetworkPolicies]",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('subnets')[3].nsgName)]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "[parameters('subnets')[4].name]",
-                        "properties": {
-                            "addressPrefixes": "[parameters('subnets')[4].properties.addressPrefixes]",
-                            "delegations": "[parameters('subnets')[4].properties.delegations]",
-                            "privateEndpointNetworkPolicies": "[parameters('subnets')[4].properties.privateEndpointNetworkPolicies]",
-                            "privateLinkServiceNetworkPolicies": "[parameters('subnets')[4].properties.privateLinkServiceNetworkPolicies]",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('subnets')[4].nsgName)]"
-                            }
-                        }
-                    },
-                    {
-                        "name": "[parameters('subnets')[5].name]",
-                        "properties": {
-                            "addressPrefixes": "[parameters('subnets')[5].properties.addressPrefixes]",
-                            "delegations": "[parameters('subnets')[5].properties.delegations]",
-                            "privateEndpointNetworkPolicies": "[parameters('subnets')[5].properties.privateEndpointNetworkPolicies]",
-                            "privateLinkServiceNetworkPolicies": "[parameters('subnets')[5].properties.privateLinkServiceNetworkPolicies]",
-                            "networkSecurityGroup": {
-                                "id": "[resourceId('Microsoft.Network/networkSecurityGroups',parameters('subnets')[5].nsgName)]"
-                            }
+                            "addressPrefix": "[parameters('hubResourceSubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
                         }
                     }
                 ]
