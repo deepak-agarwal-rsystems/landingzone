@@ -49,6 +49,12 @@ $bastionHostName = "bastion-z-$applicationName-p-001"
 # Application Gateway parameters
 $applicationGatewayName = "ag-z-$applicationName-p-001"
 
+# Key Vault parameters
+$keyvaultName = "kv-z-$applicationName-infra-p-001"
+
+# Storage Account parameters
+$storageAccountName = "saz$($applicationName)infra001"
+
 # Prepare Parameter Files
 & "./UpdateParameterFiles.ps1"
 
@@ -146,7 +152,28 @@ $templateParameterFile = "./Bastion/bastion-template-parameters.$environment.jso
 # Deploy the application gateway
 $templateFile = "./ApplicationGateway/ag-template.json"
 $templateParameterFile = "./ApplicationGateway/ag-template-parameters.$environment.json"
+# az deployment group create `
+#    --resource-group $rgHubName `
+#    --template-file $templateFile `
+#    --parameters $globalParameterFile $templateParameterFile
+
+#================================================================================
+# Spoke Infra Resources
+
+# Deploy Key vault
+$templateFile = "./Keyvault/kv-template.json"
+$templateParameterFile = "./Keyvault/kv-template-parameters.$environment.json"
 az deployment group create `
-   --resource-group $rgHubName `
+   --resource-group $rgSpokeName `
    --template-file $templateFile `
    --parameters $globalParameterFile $templateParameterFile
+
+# Deploy Storage Account
+$templateFile = "./StorageAccount/sa-template.json"
+$templateParameterFile = "./StorageAccount/sa-template-parameters.$environment.json"
+az deployment group create `
+   --resource-group $rgSpokeName `
+   --template-file $templateFile `
+   --parameters $globalParameterFile $templateParameterFile
+
+# Deploy Private DNS

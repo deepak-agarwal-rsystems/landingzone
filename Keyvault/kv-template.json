@@ -32,7 +32,7 @@
             "properties": {
                 "sku": {
                     "family": "A",
-                    "name": "standard"
+                    "name": "[parameters('skuName')]"
                 },
                 "tenantId": "[subscription().tenantId]",
                 "networkAcls": {

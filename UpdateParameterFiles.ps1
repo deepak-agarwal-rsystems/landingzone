@@ -141,3 +141,33 @@ $paramContent.parameters.subNetName.value = $appGatewaySubnetName
 
 # Save the updated parameter file back to disk
 $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+
+#====================================================================================
+# Update Key Vault Parameter File
+
+# Path to the parameter file
+$parameterFilePath = "./Keyvault/kv-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.keyvaultName.value = $keyvaultName
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+
+#====================================================================================
+# Update storage account parameter file
+
+# Path to the parameter file
+$parameterFilePath = "./StorageAccount/sa-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.storageAccountName.value = $storageAccountName
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
