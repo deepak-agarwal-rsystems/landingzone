@@ -43,6 +43,12 @@ $publicIPAddressesNames = @("pip-z-$applicationName-ag-p-001", "pip-z-$applicati
 # VPN Gateway parameters
 $virtualNetworkGatewayName = "vpngw-z-$applicationName-hub-p-001"
 
+# Azure Bastion parameters
+$bastionHostName = "bastion-z-$applicationName-p-001"
+
+# Application Gateway parameters
+$applicationGatewayName = "ag-z-$applicationName-p-001"
+
 # Prepare Parameter Files
 & "./UpdateParameterFiles.ps1"
 
@@ -107,10 +113,10 @@ $templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameter
 # Deploy the public IPs address
 $templateFile = "./PublicKeys/pk-template.json"
 $templateParameterFile = "./PublicKeys/pk-template-parameters.$environment.json"
-az deployment group create `
-   --resource-group $rgHubName `
-   --template-file $templateFile `
-   --parameters $templateParameterFile $globalParameterFile
+# az deployment group create `
+#    --resource-group $rgHubName `
+#    --template-file $templateFile `
+#    --parameters $templateParameterFile $globalParameterFile
 
 #================================================================================
 # Virtual Network Gateways
@@ -118,7 +124,29 @@ az deployment group create `
 # Deploy the Virtual Network Gateway
 $templateFile = "./VPNGateway/vpngw-template.json"
 $templateParameterFile = "./VPNGateway/vpngw-template-parameters.$environment.json"
+# az deployment group create `
+#    --resource-group $rgHubName `
+#    --template-file $templateFile `
+#    --parameters $templateParameterFile $globalParameterFile
+
+#================================================================================
+# Azure Bastion
+
+# Deploy the Bastion
+$templateFile = "./Bastion/bastion-template.json"
+$templateParameterFile = "./Bastion/bastion-template-parameters.$environment.json"
+# az deployment group create `
+#    --resource-group $rgHubName `
+#    --template-file $templateFile `
+#    --parameters $templateParameterFile $globalParameterFile
+
+#================================================================================
+# Application Gateway 
+
+# Deploy the application gateway
+$templateFile = "./ApplicationGateway/ag-template.json"
+$templateParameterFile = "./ApplicationGateway/ag-template-parameters.$environment.json"
 az deployment group create `
    --resource-group $rgHubName `
    --template-file $templateFile `
-   --parameters $templateParameterFile $globalParameterFile
+   --parameters $globalParameterFile $templateParameterFile

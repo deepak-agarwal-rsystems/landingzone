@@ -1,21 +1,21 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "bastionHostsName": {
-            "value": "bastion-z-cplus-p-001"
-        },
-        "publicIp-name":{
-            "value":"pip-z-cplus-bastion-p-001"
-        },
-        "virtualNetworkName":{
-            "value":"vnet-z-cplusgw-p-001"
-        },
-        "subnetName":{
-            "value":"AzureBastionSubnet"
-        },        
-        "sku": {
-            "value": "Basic"
-        }
-    }
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion":  "1.0.0.0",
+    "parameters":  {
+                       "bastionHostName":  {
+                                               "value":  "bastion-z-cplus-p-001"
+                                           },
+                       "publicIPAddressName":  {
+                                                   "value":  "pip-z-cplus-bastion-p-001"
+                                               },
+                       "virtualNetworkName":  {
+                                                  "value":  "vnet-z-cplus-hub-p-001"
+                                              },
+                       "subnetName":  {
+                                          "value":  "AzureBastionSubnet"
+                                      },
+                       "sku":  {
+                                   "value":  "Basic"
+                               }
+                   }
 }

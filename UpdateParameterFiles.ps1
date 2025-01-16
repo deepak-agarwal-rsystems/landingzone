@@ -106,3 +106,38 @@ $paramContent.parameters.virtualNetworkName.value = $hubVirtualNetworkName
 
 # Save the updated parameter file back to disk
 $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+
+#====================================================================================
+# Update Azure Bastion Parameter File
+
+# Path to the parameter file
+$parameterFilePath = "./Bastion/bastion-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.bastionHostName.value = $bastionHostName
+$paramContent.parameters.publicIPAddressName.value = $publicIPAddressesNames[1]
+$paramContent.parameters.virtualNetworkName.value = $hubVirtualNetworkName
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+
+#====================================================================================
+# Update Application Gateway Parameter File
+
+# Path to the parameter file
+$parameterFilePath = "./ApplicationGateway/ag-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.applicationGatewayName.value = $applicationGatewayName
+$paramContent.parameters.publicIPAddressName.value = $publicIPAddressesNames[0]
+$paramContent.parameters.virtualNetworkName.value = $hubVirtualNetworkName
+$paramContent.parameters.subNetName.value = $appGatewaySubnetName
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath

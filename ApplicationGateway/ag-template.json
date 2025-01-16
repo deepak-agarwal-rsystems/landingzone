@@ -2,7 +2,7 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "applicationGatewaysName": {
+        "applicationGatewayName": {
             "defaultValue": "ag-z-cplus-infra-n-001",
             "type": "String"
         },
@@ -14,7 +14,7 @@
             "defaultValue": "sn-z-cplus-appgateway",
             "type": "String"
         },
-        "publicIPAddressesName": {
+        "publicIPAddressName": {
             "defaultValue": "pip-z-cplus-ag-n-001",
             "type": "String"
         },
@@ -38,7 +38,7 @@
         {
             "type": "Microsoft.Network/applicationGateways",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('applicationGatewaysName')]",
+            "name": "[parameters('applicationGatewayName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {
@@ -67,7 +67,7 @@
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressesName'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
                             }
                         }
                     }
@@ -112,10 +112,10 @@
                         "name": "TestListner",
                         "properties": {
                             "frontendIPConfiguration": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewaysName')), '/frontendIPConfigurations/appGwPublicFrontendIpIPv4')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIpIPv4')]"
                             },
                             "frontendPort": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewaysName')), '/frontendPorts/port_80')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/frontendPorts/port_80')]"
                             },
                             "protocol": "Http",
                             "sslCertificate": null,
@@ -131,14 +131,14 @@
                         "properties": {
                             "RuleType": "Basic",
                             "httpListener": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewaysName')), '/httpListeners/TestListner')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/httpListeners/TestListner')]"
                             },
                             "priority": 100,
                             "backendAddressPool": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewaysName')), '/backendAddressPools/TestBackendTarget')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendAddressPools/TestBackendTarget')]"
                             },
                             "backendHttpSettings": {
-                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewaysName')), '/backendHttpSettingsCollection/TestBackendSetting')]"
+                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', parameters('applicationGatewayName')), '/backendHttpSettingsCollection/TestBackendSetting')]"
                             }
                         }
                     }

@@ -2,11 +2,11 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "bastionHostsName": {
+        "bastionHostName": {
             "defaultValue": "bastion-z-cplus-n-001",
             "type": "String"
         },
-        "publicIp-name":{
+        "publicIPAddressName":{
             "type": "string",
             "defaultValue":"pip-z-cplus-bastion-n-001"
         },
@@ -38,7 +38,7 @@
         {
             "type": "Microsoft.Network/bastionHosts",
             "apiVersion": "2023-04-01",
-            "name": "[parameters('bastionHostsName')]",
+            "name": "[parameters('bastionHostName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "sku": {
@@ -49,11 +49,11 @@
                 "ipConfigurations": [
                     {
                         "name": "IpConf",
-                        "id": "[concat(resourceId('Microsoft.Network/bastionHosts', parameters('bastionHostsName')), '/bastionHostIpConfigurations/IpConf')]",
+                        "id": "[concat(resourceId('Microsoft.Network/bastionHosts', parameters('bastionHostName')), '/bastionHostIpConfigurations/IpConf')]",
                         "properties": {
                             "privateIPAllocationMethod": "Dynamic",
                             "publicIPAddress": {
-                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIp-name'))]"
+                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', parameters('publicIPAddressName'))]"
                             },
                             "subnet": {
                                 "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
