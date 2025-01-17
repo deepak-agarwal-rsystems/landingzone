@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "keyvaultName":  {
-                                            "value":  "kv-z-cpru-infra-p-001"
+                                            "value":  "kv-z-cpru-spoke-p-001"
                                         },
                        "skuName":  {
                                        "value":  "Standard"

@@ -171,3 +171,21 @@ $paramContent.parameters.storageAccountName.value = $storageAccountName
 
 # Save the updated parameter file back to disk
 $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
+
+#====================================================================================
+# Update private dns parameter file
+
+# Path to the parameter file
+$parameterFilePath = "./PrivateDNS/privatedns-template-parameters.$environment.json"
+
+# Load the existing parameter file
+$paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
+
+# Update the parameter file content
+$paramContent.parameters.privateDNSName.value = $privateDNSName
+$paramContent.parameters.hubResourceGroupName.value = $rgHubName
+$paramContent.parameters.hubVirtualNetworkName.value = $hubVirtualNetworkName
+$paramContent.parameters.spokeVirtualNetworkName.value = $spokeVirtualNetworkName
+
+# Save the updated parameter file back to disk
+$paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath

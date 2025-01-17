@@ -6,7 +6,7 @@
 
 # Global Variables (Data need to collect from users)
 $environment = "prod"
-$location = "centralus"
+$location = "eastus"
 $applicationName = "cpru"
 $costCenterCode = "1108-300-8602"
 
@@ -50,10 +50,13 @@ $bastionHostName = "bastion-z-$applicationName-p-001"
 $applicationGatewayName = "ag-z-$applicationName-p-001"
 
 # Key Vault parameters
-$keyvaultName = "kv-z-$applicationName-infra-p-001"
+$keyvaultName = "kv-z-$applicationName-spoke-p-001"
 
 # Storage Account parameters
-$storageAccountName = "saz$($applicationName)infra001"
+$storageAccountName = "saz$($applicationName)spoke001"
+
+# Private DNS parameters
+$privateDNSName = "privatedns-z-$applicationName-spoke-p-001.com"
 
 # Prepare Parameter Files
 & "./UpdateParameterFiles.ps1"
@@ -63,39 +66,40 @@ $globalParameterFile = "./global-parameters.$environment.json"
 
 #================================================================================
 # Deploy Resource Groups
-& "./ResourceGroup/resourcegroup-template-deployment.ps1"
+#& "./ResourceGroup/resourcegroup-template-deployment.ps1"
 
 #================================================================================
 # Deploy Virtual Networks
-& "./VirtualNetwork/vnet-template-deployment.ps1"
+#& "./VirtualNetwork/vnet-template-deployment.ps1"
 
 #================================================================================
 # Deploy Public IPs
-& "./PublicKeys/pk-template-deployment.ps1"
+#& "./PublicKeys/pk-template-deployment.ps1"
 
 #================================================================================
 # Deploy Virtual Network Gateways
-& "./VPNGateway/vpngw-template-deployment.ps1"
+#& "./VPNGateway/vpngw-template-deployment.ps1"
 
 #================================================================================
 # Deploy Virtual Network Peering
-& "./VirtualNetwork/vnet-peering-deployment.ps1"
+#& "./VirtualNetwork/vnet-peering-deployment.ps1"
 
 #================================================================================
 # Deploy Azure Bastion
-& "./Bastion/bastion-template-deployment.ps1"
+#& "./Bastion/bastion-template-deployment.ps1"
 
 #================================================================================
 # Deploy Application Gateway 
-& "./ApplicationGateway/ag-template-deployment.ps1"
+#& "./ApplicationGateway/ag-template-deployment.ps1"
 
 #================================================================================
 # Spoke Infra Resources
 
 # Deploy Key vault
-& "./Keyvault/kv-template-deployment.ps1"
+#& "./Keyvault/kv-template-deployment.ps1"
 
 # Deploy Storage Account
-& "./StorageAccount/sa-template-deployment.ps1"
+#& "./StorageAccount/sa-template-deployment.ps1"
 
 # Deploy Private DNS
+#& "./PrivateDNS/privatedns-template-deployment.ps1"

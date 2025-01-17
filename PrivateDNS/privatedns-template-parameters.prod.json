@@ -1,0 +1,18 @@
+{
+    "$schema":  "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+    "contentVersion":  "1.0.0.0",
+    "parameters":  {
+                       "privateDNSName":  {
+                                              "value":  "privatedns-z-cpru-spoke-p-001.com"
+                                          },
+                       "hubResourceGroupName":  {
+                                                    "value":  "rg-z-cpru-hub-p-001"
+                                                },
+                       "hubVirtualNetworkName":  {
+                                                     "value":  "vnet-z-cpru-hub-p-001"
+                                                 },
+                       "spokeVirtualNetworkName":  {
+                                                       "value":  "vnet-z-cpru-spoke-p-001"
+                                                   }
+                   }
+}

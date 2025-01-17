@@ -1,0 +1,80 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "privateDNSName": {
+            "defaultValue": "privatedns-z-cplus-spoke-p-001",
+            "type": "String"
+        },
+        "hubResourceGroupName": {
+            "defaultValue": "rg-z-cplus-spoke-p-001",
+            "type": "String"
+        },
+        "hubVirtualNetworkName": {
+            "defaultValue": "vnet-z-cplus-hub-p-001",
+            "type": "String"
+        },
+        "spokeVirtualNetworkName": {
+            "defaultValue": "vnet-z-cplus-spoke-p-001",
+            "type": "String"
+        },
+        "location": {
+            "type": "String",
+            "defaultValue": "centralus"
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "Object"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "Microsoft.Network/privateDnsZones",
+            "apiVersion": "2024-06-01",
+            "name": "[parameters('privateDNSName')]",
+            "location": "global",
+            "tags": "[parameters('tags')]",
+            "properties": {
+                "maxNumberOfRecordSets": 1000,
+                "maxNumberOfVirtualNetworkLinks": 100,
+                "maxNumberOfVirtualNetworkLinksInPendingState": 10
+            }
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2024-06-01",
+            "name": "[concat(parameters('privateDNSName'), '/spoke')]",            
+            "dependsOn": [
+                "[concat('Microsoft.Network/privateDnsZones/', parameters('privateDNSName'))]"
+            ],
+            "location": "global",
+            "properties": {
+                "registrationEnabled": true,
+                "virtualNetwork": {
+                    "id": "[resourceId('Microsoft.Network/virtualNetworks', parameters('spokeVirtualNetworkName'))]"
+                }
+            },
+            "tags": "[parameters('tags')]"
+        },
+        {
+            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+            "apiVersion": "2024-06-01",
+            "name": "[concat(parameters('privateDNSName'), '/hub')]",            
+            "dependsOn": [
+                "[concat('Microsoft.Network/privateDnsZones/', parameters('privateDNSName'))]"
+            ],
+            "location": "global",
+            "properties": {
+                "registrationEnabled": true,
+                "virtualNetwork": {
+                    "id": "[resourceId(parameters('hubResourceGroupName'),'Microsoft.Network/virtualNetworks', parameters('hubVirtualNetworkName'))]"
+                }
+            },
+            "tags": "[parameters('tags')]"
+        }
+
+    ]
+}

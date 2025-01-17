@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "storageAccountName":  {
-                                                  "value":  "sazcpruinfra001"
+                                                  "value":  "sazcpruspoke001"
                                               },
                        "skuName":  {
                                        "value":  "Standard_ZRS"
