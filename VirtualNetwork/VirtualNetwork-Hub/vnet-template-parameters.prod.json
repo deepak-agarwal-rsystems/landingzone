@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "hubVirtualNetworkName":  {
-                                                     "value":  "vnet-z-cplus-hub-p-001"
+                                                     "value":  "vnet-z-cpru-hub-p-001"
                                                  },
                        "hubVNetAddressPrefixes":  {
                                                       "value":  [
@@ -12,10 +12,10 @@
                                                                 ]
                                                   },
                        "appGatewaySubnetName":  {
-                                                    "value":  "sn-z-cplus-appgateway"
+                                                    "value":  "sn-z-cpru-appgateway"
                                                 },
                        "hubResourceSubnetName":  {
-                                                     "value":  "sn-z-cplus-hubresource"
+                                                     "value":  "sn-z-cpru-hubresource"
                                                  },
                        "gatewaySubnetAddressPrefix":  {
                                                           "value":  "10.195.72.0/24"

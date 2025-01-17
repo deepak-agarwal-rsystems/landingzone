@@ -15,7 +15,7 @@ $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
 #====================================================================================
 # Update Hub VNet Parameter File
 # Path to the parameter file
-$parameterFilePath = "./VirtualNetwork-Hub/vnet-template-parameters.$environment.json"
+$parameterFilePath = "./VirtualNetwork/VirtualNetwork-Hub/vnet-template-parameters.$environment.json"
 
 # Load the existing parameter file
 $paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
@@ -37,7 +37,7 @@ $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
 # Update Spoke VNet Parameter File
 
 # Path to the parameter file
-$parameterFilePath = "./VirtualNetwork-Infra/vnet-template-parameters.$environment.json"
+$parameterFilePath = "./VirtualNetwork/VirtualNetwork-Infra/vnet-template-parameters.$environment.json"
 
 # Load the existing parameter file
 $paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json
@@ -62,7 +62,7 @@ $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
 # Update vnet peering parameter file
 
 # Path to the parameter file
-$parameterFilePath = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
+$parameterFilePath = "./VirtualNetwork/VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
 
 # Load the existing parameter file
 $paramContent = Get-Content -Path $parameterFilePath | ConvertFrom-Json

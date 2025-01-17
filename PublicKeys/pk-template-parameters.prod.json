@@ -4,9 +4,9 @@
     "parameters":  {
                        "publicIPAddressesNames":  {
                                                       "value":  [
-                                                                    "pip-z-cplus-ag-p-001",
-                                                                    "pip-z-cplus-bastion-p-001",
-                                                                    "pip-z-cplus-gw-p-001"
+                                                                    "pip-z-cpru-ag-p-001",
+                                                                    "pip-z-cpru-bastion-p-001",
+                                                                    "pip-z-cpru-gw-p-001"
                                                                 ]
                                                   },
                        "sku":  {

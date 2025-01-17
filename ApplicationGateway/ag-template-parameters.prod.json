@@ -3,16 +3,16 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "applicationGatewayName":  {
-                                                      "value":  "ag-z-cplus-p-001"
+                                                      "value":  "ag-z-cpru-p-001"
                                                   },
                        "virtualNetworkName":  {
-                                                  "value":  "vnet-z-cplus-hub-p-001"
+                                                  "value":  "vnet-z-cpru-hub-p-001"
                                               },
                        "subNetName":  {
-                                          "value":  "sn-z-cplus-appgateway"
+                                          "value":  "sn-z-cpru-appgateway"
                                       },
                        "publicIPAddressName":  {
-                                                   "value":  "pip-z-cplus-ag-p-001"
+                                                   "value":  "pip-z-cpru-ag-p-001"
                                                },
                        "sku":  {
                                    "value":  "Standard_v2"

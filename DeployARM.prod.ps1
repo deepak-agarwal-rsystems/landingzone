@@ -7,7 +7,7 @@
 # Global Variables (Data need to collect from users)
 $environment = "prod"
 $location = "centralus"
-$applicationName = "cplus"
+$applicationName = "cpru"
 $costCenterCode = "1108-300-8602"
 
 # Tags parameters
@@ -62,118 +62,40 @@ $storageAccountName = "saz$($applicationName)infra001"
 $globalParameterFile = "./global-parameters.$environment.json"
 
 #================================================================================
-# Resource Groups
-
-# Deploy the Hub Resource Group
-$templateFile = "./ResourceGroup/resourcegroup-template.json"
-# az deployment sub create `
-#    --location $location `
-#    --template-file $templateFile `
-#    --parameters $globalParameterFile name=$rgHubName
-
-# Deploy the Spoke Resource Group
-$templateFile = "./ResourceGroup/resourcegroup-template.json"
-# az deployment sub create `
-#    --location $location `
-#    --template-file $templateFile `
-#    --parameters $globalParameterFile name=$rgSpokeName
+# Deploy Resource Groups
+& "./ResourceGroup/resourcegroup-template-deployment.ps1"
 
 #================================================================================
-# Virtual Networks
-
-# Deploy the Hub Virtual Network
-$templateFile = "./VirtualNetwork-Hub/vnet-template.json"
-$templateParameterFile = "./VirtualNetwork-Hub/vnet-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgHubName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile $globalParameterFile
-
-# Deploy Spoke Virtual Network
-$templateFile = "./VirtualNetwork-Infra/vnet-template.json"
-$templateParameterFile = "./VirtualNetwork-Infra/vnet-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgSpokeName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile $globalParameterFile
-
-# Peer Hub to Spoke Virtual Network
-$templateFile = "./VirtualNetworkPeering/vnetpeering-hubtospoke-template.json"
-$templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgSpokeName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile
-
-# Peer Spoke to Hub Virtual Network
-$templateFile = "./VirtualNetworkPeering/vnetpeering-spoketohub-template.json"
-$templateParameterFile = "./VirtualNetworkPeering/vnetpeering-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgHubName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile
+# Deploy Virtual Networks
+& "./VirtualNetwork/vnet-template-deployment.ps1"
 
 #================================================================================
-# Public IPs
-
-# Deploy the public IPs address
-$templateFile = "./PublicKeys/pk-template.json"
-$templateParameterFile = "./PublicKeys/pk-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgHubName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile $globalParameterFile
+# Deploy Public IPs
+& "./PublicKeys/pk-template-deployment.ps1"
 
 #================================================================================
-# Virtual Network Gateways
-
-# Deploy the Virtual Network Gateway
-$templateFile = "./VPNGateway/vpngw-template.json"
-$templateParameterFile = "./VPNGateway/vpngw-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgHubName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile $globalParameterFile
+# Deploy Virtual Network Gateways
+& "./VPNGateway/vpngw-template-deployment.ps1"
 
 #================================================================================
-# Azure Bastion
-
-# Deploy the Bastion
-$templateFile = "./Bastion/bastion-template.json"
-$templateParameterFile = "./Bastion/bastion-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgHubName `
-#    --template-file $templateFile `
-#    --parameters $templateParameterFile $globalParameterFile
+# Deploy Virtual Network Peering
+& "./VirtualNetwork/vnet-peering-deployment.ps1"
 
 #================================================================================
-# Application Gateway 
+# Deploy Azure Bastion
+& "./Bastion/bastion-template-deployment.ps1"
 
-# Deploy the application gateway
-$templateFile = "./ApplicationGateway/ag-template.json"
-$templateParameterFile = "./ApplicationGateway/ag-template-parameters.$environment.json"
-# az deployment group create `
-#    --resource-group $rgHubName `
-#    --template-file $templateFile `
-#    --parameters $globalParameterFile $templateParameterFile
+#================================================================================
+# Deploy Application Gateway 
+& "./ApplicationGateway/ag-template-deployment.ps1"
 
 #================================================================================
 # Spoke Infra Resources
 
 # Deploy Key vault
-$templateFile = "./Keyvault/kv-template.json"
-$templateParameterFile = "./Keyvault/kv-template-parameters.$environment.json"
-az deployment group create `
-   --resource-group $rgSpokeName `
-   --template-file $templateFile `
-   --parameters $globalParameterFile $templateParameterFile
+& "./Keyvault/kv-template-deployment.ps1"
 
 # Deploy Storage Account
-$templateFile = "./StorageAccount/sa-template.json"
-$templateParameterFile = "./StorageAccount/sa-template-parameters.$environment.json"
-az deployment group create `
-   --resource-group $rgSpokeName `
-   --template-file $templateFile `
-   --parameters $globalParameterFile $templateParameterFile
+& "./StorageAccount/sa-template-deployment.ps1"
 
 # Deploy Private DNS

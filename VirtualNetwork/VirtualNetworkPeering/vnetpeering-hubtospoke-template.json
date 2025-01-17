@@ -45,14 +45,14 @@
     {
       "type": "Microsoft.Network/virtualNetworks/virtualNetworkPeerings",
       "apiVersion": "2021-05-01",
-      "name": "[concat(parameters('hubVnetName'), '/', parameters('hubToSpokePeeringName'))]",
+      "name": "[concat(parameters('spokeVnetName'), '/', parameters('spokeToHubPeeringName'))]",
       "properties": {
         "allowVirtualNetworkAccess": true,
         "allowForwardedTraffic": true,
         "allowGatewayTransit": false,
-        "useRemoteGateways": false,
+        "useRemoteGateways": true,
         "remoteVirtualNetwork": {
-          "id": "[resourceId(parameters('spokeResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('spokeVnetName'))]"
+          "id": "[resourceId(parameters('hubResourceGroupName'), 'Microsoft.Network/virtualNetworks', parameters('hubVnetName'))]"
         }
       }
     }

@@ -3,13 +3,13 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "virtualNetworkGatewayName":  {
-                                                         "value":  "vpngw-z-cplus-hub-p-001"
+                                                         "value":  "vpngw-z-cpru-hub-p-001"
                                                      },
                        "publicIPAddressName":  {
-                                                   "value":  "pip-z-cplus-gw-p-001"
+                                                   "value":  "pip-z-cpru-gw-p-001"
                                                },
                        "virtualNetworkName":  {
-                                                  "value":  "vnet-z-cplus-hub-p-001"
+                                                  "value":  "vnet-z-cpru-hub-p-001"
                                               },
                        "subNetName":  {
                                           "value":  "GatewaySubnet"

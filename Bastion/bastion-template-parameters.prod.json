@@ -3,13 +3,13 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "bastionHostName":  {
-                                               "value":  "bastion-z-cplus-p-001"
+                                               "value":  "bastion-z-cpru-p-001"
                                            },
                        "publicIPAddressName":  {
-                                                   "value":  "pip-z-cplus-bastion-p-001"
+                                                   "value":  "pip-z-cpru-bastion-p-001"
                                                },
                        "virtualNetworkName":  {
-                                                  "value":  "vnet-z-cplus-hub-p-001"
+                                                  "value":  "vnet-z-cpru-hub-p-001"
                                               },
                        "subnetName":  {
                                           "value":  "AzureBastionSubnet"

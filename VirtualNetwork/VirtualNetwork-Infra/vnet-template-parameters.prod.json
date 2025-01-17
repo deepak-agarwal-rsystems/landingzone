@@ -3,7 +3,7 @@
     "contentVersion":  "1.0.0.0",
     "parameters":  {
                        "spokeVirtualNetworkName":  {
-                                                       "value":  "vnet-z-cplus-spoke-p-001"
+                                                       "value":  "vnet-z-cpru-spoke-p-001"
                                                    },
                        "spokeVNetAddressPrefixes":  {
                                                         "value":  [
@@ -13,7 +13,7 @@
                        "subnetsData":  {
                                            "value":  [
                                                          {
-                                                             "name":  "sn-z-cplus-infra",
+                                                             "name":  "sn-z-cpru-infra",
                                                              "addressPrefixes":  "10.195.64.0/24",
                                                              "delegations":  [
 
@@ -23,7 +23,7 @@
                                                              "defaultOutboundAccess":  true
                                                          },
                                                          {
-                                                             "name":  "sn-z-cplus-web",
+                                                             "name":  "sn-z-cpru-web",
                                                              "addressPrefixes":  "10.195.65.0/28",
                                                              "delegations":  [
 
@@ -33,7 +33,7 @@
                                                              "defaultOutboundAccess":  true
                                                          },
                                                          {
-                                                             "name":  "sn-z-cplus-db",
+                                                             "name":  "sn-z-cpru-db",
                                                              "addressPrefixes":  "10.195.65.16/28",
                                                              "delegations":  [
 
