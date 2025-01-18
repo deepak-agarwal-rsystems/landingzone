@@ -49,12 +49,6 @@ $paramContent.parameters.spokeVNetAddressPrefixes.value = $spokeVNetAddressPrefi
 $paramContent.parameters.subnetsData.value[0].name = $spokeInfraSubnetName
 $paramContent.parameters.subnetsData.value[0].addressPrefixes = $spokeInfraSubnetAddressPrefix
 
-$paramContent.parameters.subnetsData.value[1].name = $webResourceSubnetName
-$paramContent.parameters.subnetsData.value[1].addressPrefixes = $webResourceSubnetAddressPrefix
-
-$paramContent.parameters.subnetsData.value[2].name = $dbResourceSubnetName
-$paramContent.parameters.subnetsData.value[2].addressPrefixes = $dbResourceSubnetAddressPrefix
-
 # Save the updated parameter file back to disk
 $paramContent | ConvertTo-Json -Depth 10 | Set-Content -Path $parameterFilePath
 

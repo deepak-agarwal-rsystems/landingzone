@@ -6,7 +6,7 @@
 
 # Global Variables (Data need to collect from users)
 $environment = "prod"
-$location = "eastus"
+$location = "centralus"
 $applicationName = "cpru"
 $costCenterCode = "1108-300-8602"
 
@@ -31,11 +31,14 @@ $hubResourceSubnetAddressPrefix = "10.195.74.0/24"
 $spokeVirtualNetworkName = "vnet-z-$applicationName-spoke-p-001"
 $spokeVNetAddressPrefixes = @("10.195.64.0/21")
 $spokeInfraSubnetName = "sn-z-$applicationName-infra"
-$webResourceSubnetName = "sn-z-$applicationName-web"
-$dbResourceSubnetName = "sn-z-$applicationName-db"
 $spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
-$webResourceSubnetAddressPrefix = "10.195.65.0/28"
-$dbResourceSubnetAddressPrefix = "10.195.65.16/28"
+
+# virtual machine parameters
+# VM Name must be 4 characters or less
+$virtualMachines = @( 
+   @{"OSType" = "Windows"; "vmName" = "Web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 }
+   @{"OSType" = "Windows"; "vmName" = "SQL"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 }
+)
 
 # Public IP parameters
 $publicIPAddressesNames = @("pip-z-$applicationName-ag-p-001", "pip-z-$applicationName-bastion-p-001", "pip-z-$applicationName-gw-p-001")
@@ -103,3 +106,10 @@ $globalParameterFile = "./global-parameters.$environment.json"
 
 # Deploy Private DNS
 #& "./PrivateDNS/privatedns-template-deployment.ps1"
+
+#================================================================================
+# Deploy Spoke Virtual Machines
+
+foreach ( $virtualMachine in $virtualMachines ) {
+   & "./VirtualMachine/Customers/vm-template-deployment.ps1"
+}

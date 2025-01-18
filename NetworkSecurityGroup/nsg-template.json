@@ -2,9 +2,9 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "networkSecurityGroupsName": {
-            "defaultValue": [ ],
-            "type": "array"
+        "networkSecurityGroupName": {
+            "defaultValue": "nsg-z-name",
+            "type": "String"
         },
         "location": {
             "type": "String",
@@ -21,12 +21,8 @@
     "resources": [
         {            
             "type": "Microsoft.Network/networkSecurityGroups",
-            "copy":{
-                "name":"NSGLoop",
-                "count":"[length( parameters('networkSecurityGroupsName'))]"
-            },
             "apiVersion": "2023-04-01",
-            "name": "[parameters('networkSecurityGroupsName')[copyIndex()]]",
+            "name": "[parameters('networkSecurityGroupName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "properties": {

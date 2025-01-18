@@ -21,26 +21,6 @@
                                                              "privateEndpointNetworkPolicies":  "Disabled",
                                                              "privateLinkServiceNetworkPolicies":  "Enabled",
                                                              "defaultOutboundAccess":  true
-                                                         },
-                                                         {
-                                                             "name":  "sn-z-cpru-web",
-                                                             "addressPrefixes":  "10.195.65.0/28",
-                                                             "delegations":  [
-
-                                                                             ],
-                                                             "privateEndpointNetworkPolicies":  "Disabled",
-                                                             "privateLinkServiceNetworkPolicies":  "Enabled",
-                                                             "defaultOutboundAccess":  true
-                                                         },
-                                                         {
-                                                             "name":  "sn-z-cpru-db",
-                                                             "addressPrefixes":  "10.195.65.16/28",
-                                                             "delegations":  [
-
-                                                                             ],
-                                                             "privateEndpointNetworkPolicies":  "Disabled",
-                                                             "privateLinkServiceNetworkPolicies":  "Enabled",
-                                                             "defaultOutboundAccess":  true
                                                          }
                                                      ]
                                        }

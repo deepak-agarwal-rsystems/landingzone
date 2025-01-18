@@ -2,17 +2,32 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
+        "virtualMachineName": {
+            "value": "vm-z-customername-n"
+        },
+        "vmSize": {
+            "value": "Standard_B2s"
+        },
         "numberOfInstances": {
             "value": 1
         },
+        "networkInterfacesName": {
+            "value": "vm-z-customer-n-nic"
+        },
         "virtualNetworkName": {
-            "value": "vnet-z-cplus-p-001"
+            "value": "vnet-z-cplus-n-001"           
         },
-        "galaryName":{
-            "value":"gallery_z_cplus_db_p_001"
+        "subnetName": {
+            "value": "sn-z-cplus-customer"
         },
-        "imageName":{
-            "value":"vmimage-z-cplus-spcl-z-001"
+        "infraResourceGroupName": {
+            "value": "rg-z-cplus-infra-n-001"
+        },
+        "adminUserName": {
+            "value": "rg-z-cplus-infra-n-001"
+        },
+        "adminPassword": {
+            "value": ""
         }
     }
 }

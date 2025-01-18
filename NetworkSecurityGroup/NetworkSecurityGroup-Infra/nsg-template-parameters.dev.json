@@ -1,9 +1,0 @@
-{
-    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-        "networkSecurityGroupsName": {
-            "value": [ "nsg-z-cplus-ai-n-001", "nsg-z-cplus-db-n-001", "nsg-z-cplus-infra-n-001", "nsg-z-cplus-nstg-n-001", "nsg-z-cplus-plum-n-001" ]
-        }
-    }
-}

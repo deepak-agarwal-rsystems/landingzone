@@ -1,0 +1,42 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "virtualNetworkName":{
+             "type": "String",
+            "defaultValue": "vnet-z-name"
+        },
+        "subnetName": {
+            "type": "String",
+            "defaultValue": "sn-z-subnet"
+        },
+        "subnetAddressPrefix": {
+            "type": "String",
+            "defaultValue": "10.0.0.0/24"
+        },
+        "nsgName": {
+            "type": "String",
+            "defaultValue": "nsg-z-name"
+        },
+        "nsgResourceGroupName": {
+            "type": "String",
+            "defaultValue": "rg-z-nsg"
+        }
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Network/virtualNetworks/subnets",
+            "apiVersion": "2024-05-01",
+            "name": "[concat(parameters('virtualNetworkName'),'/', parameters('subnetName'))]",
+            "properties": {
+                "addressPrefix": "[parameters('subnetAddressPrefix')]",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled",
+                "networkSecurityGroup": {
+                    "id": "[resourceId(parameters('nsgResourceGroupName'),'Microsoft.Network/networkSecurityGroups', parameters('nsgName'))]"
+                }
+            }
+        }
+    ]
+}

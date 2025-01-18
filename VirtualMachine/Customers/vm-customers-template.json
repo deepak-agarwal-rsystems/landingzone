@@ -40,15 +40,11 @@
             "defaultValue": "rg-z-cplus-infra-n-001",
             "type": "String"
         },
-        "galaryResourceGroupName": {
+        "adminUserName": {
             "defaultValue": "rg-z-cplus-infra-n-001",
             "type": "String"
         },
-        "galaryName": {
-            "type": "string",
-            "defaultValue": ""
-        },
-        "imageName": {
+        "adminPassword": {
             "type": "string",
             "defaultValue": ""
         }
@@ -77,49 +73,42 @@
                 },
                 "storageProfile": {
                     "imageReference": {
-                        // "publisher": "MicrosoftWindowsServer",
-                        // "offer": "WindowsServer",
-                        // "sku": "2022-datacenter-smalldisk-g2",
-                        // "version": "latest"
-                        "id": "[resourceId('bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db',parameters('galaryResourceGroupName'), 'Microsoft.Compute/galleries/images', parameters('galaryName'), parameters('imageName'))]"
+                        "publisher": "MicrosoftWindowsServer",
+                        "offer": "WindowsServer",
+                        "sku": "2022-datacenter-smalldisk-g2",
+                        "version": "latest"
                     },
                     "osDisk": {
-                        //     "osType": "Windows",
-                        //    // "name": "[format('{0}_{1}_{2:000}', parameters('virtualMachineName'), 'OsDisk', copyIndex(1))]",
-                        //     "createOption": "FromImage",
-                        //     "caching": "ReadWrite",
-                        //     // "managedDisk": {
-                        //     //     "storageAccountType": "Premium_LRS"
-                        //     // },
-                        //     "deleteOption": "Delete",
-                        //     "diskSizeGB": 256
-                
-                            "createOption": "fromImage",
+                            "osType": "Windows",
+                            "name": "[format('{0}_{1}_{2:000}', parameters('virtualMachineName'), 'OsDisk', copyIndex(1))]",
+                            "createOption": "FromImage",
+                            "caching": "ReadWrite",
                             "managedDisk": {
                                 "storageAccountType": "Premium_LRS"
                             },
-                            "deleteOption": "Delete"
+                            "deleteOption": "Delete",
+                            "diskSizeGB": 512
                         },
                         "dataDisks": [],
                         "diskControllerType": "SCSI"
                     },
-                    // "osProfile": {
-                    //     "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
-                    //     "adminUsername": "azureuser",
-                    //     "adminPassword": "Copeland@123",
-                    //     "windowsConfiguration": {
-                    //         "provisionVMAgent": true,
-                    //         "enableAutomaticUpdates": true,
-                    //         "patchSettings": {
-                    //             "patchMode": "AutomaticByOS",
-                    //             "assessmentMode": "ImageDefault",
-                    //             "enableHotpatching": false
-                    //         },
-                    //         "enableVMAgentPlatformUpdates": false
-                    //     },
-                    //     "secrets": [],
-                    //     "allowExtensionOperations": true
-                    // },
+                    "osProfile": {
+                        "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
+                        "adminUsername": "[parameters('adminUserName')]",
+                        "adminPassword": "[parameters('adminPassword')]",
+                        "windowsConfiguration": {
+                            "provisionVMAgent": true,
+                            "enableAutomaticUpdates": true,
+                            "patchSettings": {
+                                "patchMode": "AutomaticByOS",
+                                "assessmentMode": "ImageDefault",
+                                "enableHotpatching": false
+                            },
+                            "enableVMAgentPlatformUpdates": false
+                        },
+                        "secrets": [],
+                        "allowExtensionOperations": true
+                    },
                     "securityProfile": {
                         "uefiSettings": {
                             "secureBootEnabled": true,
