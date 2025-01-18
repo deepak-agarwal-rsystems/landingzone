@@ -43,6 +43,10 @@
         "infraResourceGroupName": {
             "defaultValue": "rg-z-cplus-infra-n-001",
             "type": "String"
+        },
+        "adminUserName": {
+            "type": "string",
+            "defaultValue": "azureuser"
         }
     },
     "variables": {},
@@ -104,7 +108,7 @@
                 },
                 "osProfile": {
                     "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
-                    "adminUsername": "azureuser",
+                    "adminUsername": "[parameters('adminUserName')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": true,
                         "ssh": {

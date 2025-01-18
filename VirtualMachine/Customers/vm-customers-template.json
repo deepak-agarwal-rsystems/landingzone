@@ -20,10 +20,6 @@
             "type": "String",
             "defaultValue": "Standard_B2s"
         },
-        "numberOfInstances": {
-            "type": "int",
-            "defaultValue": 1
-        },
         "networkInterfacesName": {
             "defaultValue": "vm-z-customer-n-nic",
             "type": "String"
@@ -54,15 +50,12 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2023-03-01",
-            "name": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
+            "name": "[parameters('virtualMachineName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
-            "copy": {
-                "name": "virtualMachineLoop",
-                "count": "[parameters('numberOfInstances')]"
-            },
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1)))]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfacesName'))]",
+                "[concat('Microsoft.Compute/disks/', format('{0}_{1}', parameters('virtualMachineName'), 'datadisk'))]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -79,95 +72,118 @@
                         "version": "latest"
                     },
                     "osDisk": {
-                            "osType": "Windows",
-                            "name": "[format('{0}_{1}_{2:000}', parameters('virtualMachineName'), 'OsDisk', copyIndex(1))]",
-                            "createOption": "FromImage",
-                            "caching": "ReadWrite",
+                        "osType": "Windows",
+                        "createOption": "FromImage",
+                        "caching": "ReadWrite",
+                        "managedDisk": {
+                            "storageAccountType": "Premium_LRS"
+                        },
+                        "deleteOption": "Delete",
+                        "diskSizeGB": 512
+                    },
+                    "dataDisks": [
+                        {
+                            "lun": 0,
+                            "createOption": "Attach",
+                            "caching": "ReadOnly",
+                            "writeAcceleratorEnabled": false,
                             "managedDisk": {
-                                "storageAccountType": "Premium_LRS"
+                                "storageAccountType": "Premium_LRS",
+                                "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}', parameters('virtualMachineName'), 'datadisk'))]"
                             },
                             "deleteOption": "Delete",
-                            "diskSizeGB": 512
-                        },
-                        "dataDisks": [],
-                        "diskControllerType": "SCSI"
-                    },
-                    "osProfile": {
-                        "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
-                        "adminUsername": "[parameters('adminUserName')]",
-                        "adminPassword": "[parameters('adminPassword')]",
-                        "windowsConfiguration": {
-                            "provisionVMAgent": true,
-                            "enableAutomaticUpdates": true,
-                            "patchSettings": {
-                                "patchMode": "AutomaticByOS",
-                                "assessmentMode": "ImageDefault",
-                                "enableHotpatching": false
-                            },
-                            "enableVMAgentPlatformUpdates": false
-                        },
-                        "secrets": [],
-                        "allowExtensionOperations": true
-                    },
-                    "securityProfile": {
-                        "uefiSettings": {
-                            "secureBootEnabled": true,
-                            "vTpmEnabled": true
-                        },
-                        "securityType": "TrustedLaunch"
-                    },
-                    "networkProfile": {
-                        "networkInterfaces": [
-                            {
-                                "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1)))]",
-                                "properties": {
-                                    "deleteOption": "Delete"
-                                }
-                            }
-                        ]
-                    },
-                    "diagnosticsProfile": {
-                        "bootDiagnostics": {
-                            "enabled": true
-                        }
-                    }
-                }
-            },
-            {
-                "type": "Microsoft.Network/networkInterfaces",
-                "apiVersion": "2023-04-01",
-                "copy": {
-                    "name": "NetworkInterfaceLoop",
-                    "count": "[parameters('numberOfInstances')]"
-                },
-                "name": "[format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1))]",
-                "location": "[parameters('location')]",
-                "tags": "[parameters('tags')]",
-                "kind": "Regular",
-                "properties": {
-                    "ipConfigurations": [
-                        {
-                            "name": "ipconfig1",
-                            "properties": {
-                                "privateIPAllocationMethod": "Dynamic",
-                                "subnet": {
-                                    "id": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
-                                },
-                                "primary": true,
-                                "privateIPAddressVersion": "IPv4"
-                            }
+                            "toBeDetached": false
                         }
                     ],
-                    "dnsSettings": {
-                        "dnsServers": []
+                    "diskControllerType": "SCSI"
+                },
+                "osProfile": {
+                    "computerName": "[parameters('virtualMachineName')]",
+                    "adminUsername": "[parameters('adminUserName')]",
+                    "adminPassword": "[parameters('adminPassword')]",
+                    "windowsConfiguration": {
+                        "provisionVMAgent": true,
+                        "enableAutomaticUpdates": true,
+                        "patchSettings": {
+                            "patchMode": "AutomaticByOS",
+                            "assessmentMode": "ImageDefault",
+                            "enableHotpatching": false
+                        },
+                        "enableVMAgentPlatformUpdates": false
                     },
-                    "enableAcceleratedNetworking": false,
-                    "enableIPForwarding": false,
-                    "disableTcpStateTracking": false,
-                    "nicType": "Standard",
-                    "auxiliaryMode": "None",
-                    "auxiliarySku": "None"
+                    "secrets": [],
+                    "allowExtensionOperations": true
+                },
+                "securityProfile": {
+                    "uefiSettings": {
+                        "secureBootEnabled": true,
+                        "vTpmEnabled": true
+                    },
+                    "securityType": "TrustedLaunch"
+                },
+                "networkProfile": {
+                    "networkInterfaces": [
+                        {
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfacesName'))]",
+                            "properties": {
+                                "deleteOption": "Delete"
+                            }
+                        }
+                    ]
+                },
+                "diagnosticsProfile": {
+                    "bootDiagnostics": {
+                        "enabled": true
+                    }
                 }
             }
+        },
+        {
+            "type": "Microsoft.Network/networkInterfaces",
+            "apiVersion": "2023-04-01",
+            "name": "[parameters('networkInterfacesName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "kind": "Regular",
+            "properties": {
+                "ipConfigurations": [
+                    {
+                        "name": "ipconfig1",
+                        "properties": {
+                            "privateIPAllocationMethod": "Dynamic",
+                            "subnet": {
+                                "id": "[resourceId(parameters('infraResourceGroupName'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworkName'), parameters('subnetName'))]"
+                            },
+                            "primary": true,
+                            "privateIPAddressVersion": "IPv4"
+                        }
+                    }
+                ],
+                "dnsSettings": {
+                    "dnsServers": []
+                },
+                "enableAcceleratedNetworking": false,
+                "enableIPForwarding": false,
+                "disableTcpStateTracking": false,
+                "nicType": "Standard",
+                "auxiliaryMode": "None",
+                "auxiliarySku": "None"
+            }
+        },
+        {
+            "type": "Microsoft.Compute/disks",
+            "apiVersion": "2018-06-01",
+            "name": "[format('{0}_{1}', parameters('virtualMachineName'), 'datadisk')]",
+            "location": "[resourceGroup().location]",
+            "sku": {
+                "name": "Premium_LRS"
+            },
+            "properties": {
+                "creationData": {
+                    "createOption": "Empty"
+                },
+                "diskSizeGB": 512
+            }
+        }
     ]
 }

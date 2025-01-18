@@ -36,8 +36,11 @@ $spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
 # virtual machine parameters
 # VM Name must be 4 characters or less
 $virtualMachines = @( 
-   #@{"OSType" = "Windows"; "vmName" = "Web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 }
-   @{"OSType" = "Windows"; "vmName" = "SQL"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
+   @{"OSType" = "Windows"; "vmName" = "Web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 1 ; "startingVMNumber" = 1 }
+   @{"OSType" = "Windows"; "vmName" = "Web"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 2 }
+   @{"OSType" = "Windows"; "vmName" = "Web"; "vmSize" = "Standard_D2s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 4 }
+   #@{"OSType" = "Windows"; "vmName" = "SQL"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
+   #@{"OSType" = "Linux"; "vmName" = "linux"; "vmSize" = "Standard_D4s_v3"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
 )
 
 # Public IP parameters
@@ -111,6 +114,6 @@ $globalParameterFile = "./global-parameters.$environment.json"
 # Deploy Spoke Virtual Machines
 
 foreach ( $virtualMachine in $virtualMachines ) {
-   #& "./VirtualMachine/Customers/vm-template-deployment.ps1"
-   & "./VirtualMachine/Db/vm-sql-template-deployment.ps1"
+   & "./VirtualMachine/Customers/vm-customers-template-deployment.ps1"
+   #& "./VirtualMachine/Db/vm-sql-template-deployment.ps1"
 }
