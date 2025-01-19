@@ -6,6 +6,10 @@
             "defaultValue": "ilb-z-cplus-ai-n-001",
             "type": "String"
         },
+        "backendAddressPoolsName": {
+            "defaultValue": "BackendPool1",
+            "type": "String"
+        },
         "virtualNetworksName": {
             "defaultValue": "vnet-z-cplus-n-001",
             "type": "String"
@@ -23,6 +27,10 @@
         "location": {
             "type": "String",
             "defaultValue": "centralus"
+        },
+        "infraResourceGroupname": {
+            "type": "String",
+            "defaultValue": "rg-z-cplus-infra"
         },
         "skuName": {
             "type": "string",
@@ -50,10 +58,9 @@
                     {
                         "properties": {
                             "subnet": {
-                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworksName'), parameters('subnetName'))]"
+                                "id": "[resourceId(parameters('infraResourceGroupname'), 'Microsoft.Network/virtualNetworks/subnets', parameters('virtualNetworksName'), parameters('subnetName'))]"
                             },
-                            "privateIPAddress": "10.195.64.50",
-                            "privateIPAllocationMethod": "Static"
+                            "privateIPAllocationMethod": "Dynamic"
                         },
                         "name": "LoadBalancerFrontend"
                     }
@@ -61,7 +68,7 @@
                 ],
                 "backendAddressPools": [
                     {
-                        "name": "BackendPool1"
+                        "name": "[parameters('backendAddressPoolsName')]"
                     }
                 ],
                 "loadBalancingRules": [
@@ -71,7 +78,7 @@
                                 "id": "[resourceId('Microsoft.Network/loadBalancers/frontendIpConfigurations', parameters('loadBalancersName'), 'LoadBalancerFrontend')]"
                             },
                             "backendAddressPool": {
-                                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancersName'), 'BackendPool1')]"
+                                "id": "[resourceId('Microsoft.Network/loadBalancers/backendAddressPools', parameters('loadBalancersName'), parameters('backendAddressPoolsName'))]"
                             },
                             "probe": {
                                 "id": "[resourceId('Microsoft.Network/loadBalancers/probes', parameters('loadBalancersName'), 'lbprobe')]"

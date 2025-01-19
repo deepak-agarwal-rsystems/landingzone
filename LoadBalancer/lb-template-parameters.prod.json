@@ -5,6 +5,9 @@
         "loadBalancersName": {
             "value": "ilb-z-cplus-ai-p-001"
         },
+        "backendAddressPoolsName": {
+            "value": "BackendPool1"
+        },
         "virtualNetworksName": {
             "value": "vnet-z-cplus-p-001"
         },

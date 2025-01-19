@@ -36,11 +36,11 @@ $spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
 # virtual machine parameters
 # VM Name must be 4 characters or less
 $virtualMachines = @( 
-   #@{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 1 ; "startingVMNumber" = 1 }
+   @{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 1 ; "startingVMNumber" = 1; IsLoadBalancer = $true }
    #@{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 2 }
    #@{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D2s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 4 }
    #@{"OSType" = "Windows"; "vmName" = "sql"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
-   @{"OSType" = "Linux"; "vmName" = "linux"; "vmSize" = "Standard_D4s_v3"; "subnetAddressPrefix" = "10.195.65.32/28"; "adminUserName" = "azureuser"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
+   #@{"OSType" = "Linux"; "vmName" = "linux"; "vmSize" = "Standard_D4s_v3"; "subnetAddressPrefix" = "10.195.65.32/28"; "adminUserName" = "azureuser"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
 )
 
 # Public IP parameters
@@ -115,7 +115,7 @@ $globalParameterFile = "./global-parameters.$environment.json"
 
 foreach ( $virtualMachine in $virtualMachines ) {
    if($virtualMachine.vmName -eq "web") {
-      & "./VirtualMachine/Windows/vm-windows-template-deployment.ps1"
+      & "./VirtualMachine/Customers/vm-customers-template-deployment.ps1"
    }
    elseif($virtualMachine.vmName -eq "linux") {
       & "./VirtualMachine/Linux/vm-linux-template-deployment.ps1"
