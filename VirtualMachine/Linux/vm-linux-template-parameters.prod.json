@@ -8,9 +8,6 @@
         "vmSize": {
             "value": "Standard_F16s_v2"
         },
-        "numberOfInstances": {
-            "value": 3
-        },
         "networkInterfacesName": {
             "value": "vm-z-redis-p-nic"
         },

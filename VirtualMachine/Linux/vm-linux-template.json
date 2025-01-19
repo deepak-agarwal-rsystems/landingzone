@@ -20,11 +20,7 @@
             "type": "String",
             "defaultValue": "Standard_D4s_v3"
         },
-        "numberOfInstances": {
-            "type": "int",
-            "defaultValue": 3
-        },
-        "networkInterfacesName": {
+        "networkInterfaceName": {
             "defaultValue": "vm-z-redis-n-nic",
             "type": "String"
         },
@@ -54,16 +50,12 @@
         {
             "type": "Microsoft.Compute/virtualMachines",
             "apiVersion": "2023-03-01",
-            "name": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
+            "name": "[parameters('virtualMachineName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
-            "copy": {
-                "name": "virtualMachineLoop",
-                "count": "[parameters('numberOfInstances')]"
-            },
             "dependsOn": [
-                "[concat('Microsoft.Network/networkInterfaces/', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1)))]",
-                "[concat('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk', copyIndex(1)))]"
+                "[concat('Microsoft.Network/networkInterfaces/', parameters('networkInterfaceName'))]",
+                "[concat('Microsoft.Compute/disks/', format('{0}_{1}', parameters('virtualMachineName'), 'datadisk'))]"
             ],
             "properties": {
                 "hardwareProfile": {
@@ -81,7 +73,7 @@
                     },
                     "osDisk": {
                         "osType": "Linux",
-                        "name": "[format('{0}_{1}_{2:000}', parameters('virtualMachineName'), 'OsDisk', copyIndex(1))]",
+                        "name": "[format('{0}_{1}', parameters('virtualMachineName'), 'OsDisk')]",
                         "createOption": "FromImage",
                         "caching": "ReadWrite",
                         "managedDisk": {
@@ -98,7 +90,7 @@
                             "writeAcceleratorEnabled": false,
                             "managedDisk": {
                                 "storageAccountType": "Premium_LRS",
-                                "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk', copyIndex(1)))]"
+                                "id": "[resourceId('Microsoft.Compute/disks/', format('{0}_{1}', parameters('virtualMachineName'), 'datadisk'))]"
                             },
                             "deleteOption": "Delete",
                             "toBeDetached": false
@@ -107,7 +99,7 @@
                     "diskControllerType": "SCSI"
                 },
                 "osProfile": {
-                    "computerName": "[format('{0}-{1:000}', parameters('virtualMachineName'), copyIndex(1))]",
+                    "computerName": "[parameters('virtualMachineName')]",
                     "adminUsername": "[parameters('adminUserName')]",
                     "linuxConfiguration": {
                         "disablePasswordAuthentication": true,
@@ -132,7 +124,7 @@
                 "networkProfile": {
                     "networkInterfaces": [
                         {
-                            "id": "[resourceId('Microsoft.Network/networkInterfaces', format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1)))]",
+                            "id": "[resourceId('Microsoft.Network/networkInterfaces', parameters('networkInterfaceName'))]",
                             "properties": {
                                 "deleteOption": "Delete"
                             }
@@ -149,11 +141,7 @@
         {
             "type": "Microsoft.Network/networkInterfaces",
             "apiVersion": "2023-04-01",
-            "copy": {
-                "name": "NetworkInterfaceLoop",
-                "count": "[parameters('numberOfInstances')]"
-            },
-            "name": "[format('{0}-{1:000}',parameters('networkInterfacesName'), copyIndex(1))]",
+            "name": "[parameters('networkInterfaceName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
             "kind": "Regular",
@@ -185,11 +173,7 @@
         {
             "type": "Microsoft.Compute/disks",
             "apiVersion": "2018-06-01",
-            "copy": {
-                "name": "DataDiskLoop",
-                "count": "[parameters('numberOfInstances')]"
-            },
-            "name": "[format('{0}_{1}-{2:000}', parameters('virtualMachineName'), 'datadisk', copyIndex(1))]",
+            "name": "[format('{0}_{1}', parameters('virtualMachineName'), 'datadisk')]",
             "location": "[resourceGroup().location]",
             "sku": {
                 "name": "Premium_LRS"

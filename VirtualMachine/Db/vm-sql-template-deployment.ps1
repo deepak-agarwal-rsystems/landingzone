@@ -29,13 +29,14 @@ az deployment group create `
     nsgName=$networkSecurityGroupName `
     nsgResourceGroupName=$rgVMName
 
-
+# Deploy the SQL VM
 $templateFile = "./VirtualMachine/Db/vm-sql-template.json"
 $templateParameterFile = "./VirtualMachine/Db/vm-sql-template-parameters.$environment.json"
 $noOfInstance = $virtualMachine.numberOfInstance
 $counter = $virtualMachine.startingVMNumber
 $noOfInstance = $noOfInstance+$counter
-Write-Output "Starting counter $counter"
+#Write-Output "Starting counter $counter"
+
 while ($counter -lt $noOfInstance) {
     $vmName = "vm-z-$($virtualMachine.vmName)-p-$($counter.ToString('000'))"
     $vmNICName = "$vmName-nic"      
