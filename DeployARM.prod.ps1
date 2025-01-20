@@ -10,6 +10,26 @@ $location = "centralus"
 $applicationName = "cpru"
 $costCenterCode = "1108-300-8602"
 
+$hubVNetAddressPrefixes = @("10.195.72.0/22", "10.195.78.0/23")
+$gatewaySubnetAddressPrefix = "10.195.72.0/24"
+$bastionSubnetAddressPrefix = "10.195.73.0/26"
+$appGatewaySubnetAddressPrefix = "10.195.73.64/26"
+$hubResourceSubnetAddressPrefix = "10.195.74.0/24"
+
+# Spoke Virtual Network parameters
+$spokeVNetAddressPrefixes = @("10.195.64.0/21")
+$spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
+
+# virtual machine parameters
+# VM Name must be 4 characters or less
+$virtualMachines = @( 
+   @{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 1 ; "startingVMNumber" = 1 }
+   @{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 2; IsLoadBalancer = $true }
+   @{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D2s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 4 }
+   @{"OSType" = "Windows"; "vmName" = "sql"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
+   @{"OSType" = "Linux"; "vmName" = "linux"; "vmSize" = "Standard_D4s_v3"; "subnetAddressPrefix" = "10.195.65.32/28"; "adminUserName" = "azureuser"; "numberOfInstance" = 3; "startingVMNumber" = 1; IsLoadBalancer = $true}
+)
+
 # Tags parameters
 $tags = @{"Environment" = $environment; "application" = $applicationName; "Cost Center Code" = $costCenterCode; }
 
@@ -21,27 +41,10 @@ $rgSpokeName = "rg-z-$applicationName-spoke-p-001"
 $hubVirtualNetworkName = "vnet-z-$applicationName-hub-p-001"
 $appGatewaySubnetName = "sn-z-$applicationName-appgateway"
 $hubResourceSubnetName = "sn-z-$applicationName-hubresource"
-$hubVNetAddressPrefixes = @("10.195.72.0/22", "10.195.78.0/23")
-$gatewaySubnetAddressPrefix = "10.195.72.0/24"
-$bastionSubnetAddressPrefix = "10.195.73.0/26"
-$appGatewaySubnetAddressPrefix = "10.195.73.64/26"
-$hubResourceSubnetAddressPrefix = "10.195.74.0/24"
 
 # Spoke Virtual Network parameters
 $spokeVirtualNetworkName = "vnet-z-$applicationName-spoke-p-001"
-$spokeVNetAddressPrefixes = @("10.195.64.0/21")
 $spokeInfraSubnetName = "sn-z-$applicationName-infra"
-$spokeInfraSubnetAddressPrefix = "10.195.64.0/24"
-
-# virtual machine parameters
-# VM Name must be 4 characters or less
-$virtualMachines = @( 
-   @{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D4s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 1 ; "startingVMNumber" = 1; IsLoadBalancer = $true }
-   #@{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 2 }
-   #@{"OSType" = "Windows"; "vmName" = "web"; "vmSize" = "Standard_D2s_v5"; "subnetAddressPrefix" = "10.195.65.0/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2 ; "startingVMNumber" = 4 }
-   #@{"OSType" = "Windows"; "vmName" = "sql"; "vmSize" = "Standard_D8s_v5"; "subnetAddressPrefix" = "10.195.65.16/28"; "adminUserName" = "azureuser"; "adminPassword" = "Copeland@123"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
-   #@{"OSType" = "Linux"; "vmName" = "linux"; "vmSize" = "Standard_D4s_v3"; "subnetAddressPrefix" = "10.195.65.32/28"; "adminUserName" = "azureuser"; "numberOfInstance" = 2; "startingVMNumber" = 3 }
-)
 
 # Public IP parameters
 $publicIPAddressesNames = @("pip-z-$applicationName-ag-p-001", "pip-z-$applicationName-bastion-p-001", "pip-z-$applicationName-gw-p-001")
@@ -72,43 +75,43 @@ $globalParameterFile = "./global-parameters.$environment.json"
 
 #================================================================================
 # Deploy Resource Groups
-#& "./ResourceGroup/resourcegroup-template-deployment.ps1"
+& "./ResourceGroup/resourcegroup-template-deployment.ps1"
 
 #================================================================================
 # Deploy Virtual Networks
-#& "./VirtualNetwork/vnet-template-deployment.ps1"
+& "./VirtualNetwork/vnet-template-deployment.ps1"
 
 #================================================================================
 # Deploy Public IPs
-#& "./PublicKeys/pk-template-deployment.ps1"
+& "./PublicKeys/pk-template-deployment.ps1"
 
 #================================================================================
 # Deploy Virtual Network Gateways
-#& "./VPNGateway/vpngw-template-deployment.ps1"
+& "./VPNGateway/vpngw-template-deployment.ps1"
 
 #================================================================================
 # Deploy Virtual Network Peering
-#& "./VirtualNetwork/vnet-peering-deployment.ps1"
+& "./VirtualNetwork/vnet-peering-deployment.ps1"
 
 #================================================================================
 # Deploy Azure Bastion
-#& "./Bastion/bastion-template-deployment.ps1"
+& "./Bastion/bastion-template-deployment.ps1"
 
 #================================================================================
 # Deploy Application Gateway 
-#& "./ApplicationGateway/ag-template-deployment.ps1"
+& "./ApplicationGateway/ag-template-deployment.ps1"
 
 #================================================================================
 # Spoke Infra Resources
 
 # Deploy Key vault
-#& "./Keyvault/kv-template-deployment.ps1"
+& "./Keyvault/kv-template-deployment.ps1"
 
 # Deploy Storage Account
-#& "./StorageAccount/sa-template-deployment.ps1"
+& "./StorageAccount/sa-template-deployment.ps1"
 
 # Deploy Private DNS
-#& "./PrivateDNS/privatedns-template-deployment.ps1"
+& "./PrivateDNS/privatedns-template-deployment.ps1"
 
 #================================================================================
 # Deploy Spoke Virtual Machines

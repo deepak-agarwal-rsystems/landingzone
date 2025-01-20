@@ -78,25 +78,25 @@ if ($virtualMachine.IsLoadBalancer) {
        virtualNetworksName=$spokeVirtualNetworkName `
        subNetName=$subnetName `
        infraResourceGroupname=$rgSpokeName
-}
 
-# Link the VMs to the Load Balancer using NICs
-$templateFile = "./LoadBalancer/LinkLBWithNIC/lblinknic-template.json"
-$noOfInstance = $virtualMachine.numberOfInstance
-$counter = $virtualMachine.startingVMNumber
-$noOfInstance = $noOfInstance+$counter
-while ($counter -lt $noOfInstance) {
-   $vmName = "vm-z-$($virtualMachine.vmName)-p-$($counter.ToString('000'))"
-   $vmNICName = "$vmName-nic"  
-   az deployment group create `
-       --resource-group $rgVMName `
-       --template-file $templateFile `
-       --parameters $globalParameterFile `
-       networkInterfacesName=$vmNICName `
-       loadBalancersName=$loadBalancerName `
-       backendAddressPoolsName=$backendAddressPoolsName `
-       virtualNetworksName=$spokeVirtualNetworkName `
-       subNetName=$subnetName `
-       infraResourceGroupname=$rgSpokeName
-  $counter += 1
+   # Link the VMs to the Load Balancer using NICs
+   $templateFile = "./LoadBalancer/LinkLBWithNIC/lblinknic-template.json"
+   $noOfInstance = $virtualMachine.numberOfInstance
+   $counter = $virtualMachine.startingVMNumber
+   $noOfInstance = $noOfInstance+$counter
+   while ($counter -lt $noOfInstance) {
+      $vmName = "vm-z-$($virtualMachine.vmName)-p-$($counter.ToString('000'))"
+      $vmNICName = "$vmName-nic"  
+      az deployment group create `
+         --resource-group $rgVMName `
+         --template-file $templateFile `
+         --parameters $globalParameterFile `
+         networkInterfacesName=$vmNICName `
+         loadBalancersName=$loadBalancerName `
+         backendAddressPoolsName=$backendAddressPoolsName `
+         virtualNetworksName=$spokeVirtualNetworkName `
+         subNetName=$subnetName `
+         infraResourceGroupname=$rgSpokeName
+   $counter += 1
+   }
 }
