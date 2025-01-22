@@ -4,10 +4,17 @@
 #$environment = Read-Host "Enter value for parameter1"
 #$location = Read-Host "Enter value for parameter2"
 
+# Azure Reference Links
+# https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/treyresearch/README.md
+# https://github.com/Azure/Enterprise-Scale/wiki/Deploying-ALZ-BasicSetup
+
+# Azure Application offer and other support
+# https://github.com/Azure/commercial-marketplace-data-offer-accelerator?tab=readme-ov-file
+
 # Global Variables (Data need to collect from users)
 $environment = "prod"
 $location = "centralus"
-$applicationName = "cpru"
+$applicationName = "cplus"
 $costCenterCode = "1108-300-8602"
 
 $hubVNetAddressPrefixes = @("10.195.72.0/22", "10.195.78.0/23")

@@ -1,0 +1,64 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "resourceGroupName": {
+            "defaultValue": "rg-z-cust-atsi-p-001",
+            "type": "String"
+        },
+        "appInsightName": {
+            "defaultValue": "appi-z-atsi-p-001",
+            "type": "String"
+        },
+        "clientName": {
+            "defaultValue": "attsim",
+            "type": "String"
+        },
+        "clientMainUrl": {
+            "defaultValue": "att-sim",
+            "type": "String"
+        }
+    },
+    "variables": {},
+    "resources": [
+        {
+            "type": "microsoft.insights/webtests",
+            "apiVersion": "2022-06-15",
+            "name": "[concat('file group and transaction log-', parameters('appInsightName'))]",
+            "location": "centralus",
+            "tags": {
+                "[concat('hidden-link:/subscriptions/bd838b1b-c6fb-480b-a0d8-2ef04ce8c1db/resourceGroups/', parameters('resourceGroupName'),'/providers/microsoft.insights/components/', parameters('appInsightName'))]": "Resource"
+            },
+            "properties": {
+                "SyntheticMonitorId": "[concat('log-', parameters('appInsightName'))]",
+                "Name": "[concat(parameters('clientName'), ' File Group and Transaction Log')]",
+                "Enabled": true,
+                "Frequency": 300,
+                "Timeout": 120,
+                "Kind": "standard",
+                "RetryEnabled": true,
+                "Locations": [
+                    {
+                        "Id": "us-fl-mia-edge"
+                    }
+                ],
+                "Request": {
+                    "RequestUrl": "[concat(parameters('clientMainUrl'),'JaruStats.do?query=DBMaxFileSizeStatus&threshold=90')]",
+                    "HttpVerb": "GET",
+                    "ParseDependentRequests": false
+                },
+                "ValidationRules": {
+                    "ExpectedHttpStatusCode": 200,
+                    "IgnoreHttpStatusCode": false,
+                    "ContentValidation": {
+                        "ContentMatch": "Good",
+                        "IgnoreCase": false,
+                        "PassIfTextFound": false
+                    },
+                    "SSLCheck": true,
+                    "SSLCertRemainingLifetimeCheck": 7
+                }
+            }
+        }
+    ]
+}
