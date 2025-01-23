@@ -13,3 +13,5 @@ Monitoring is deployed in two ways.
 - In bulk via the [Deploy AZ Monitor Action](https://github.com/copelandsoftware/connect-plus-azure-infra/actions/workflows/deploy-az-monitor.yml) - this should only be run after changes are made to monitoring that need to apply to all customers (or a subset)
   - The above requires reading its parameters from the `customers.json` file and will apply parameters from that file.
   - Manual tweaks have been made to monitoring so care needs to be taken not to clobber those changes by using `what-if` parameters to determine what changes will be made
+
+[![Deploy to Azure](https://aka.ms/deploytoazurebutton)](https://portal.azure.com/#create/Microsoft.Template/uri/https%3A%2F%2Fraw.githubusercontent.com%2Fdeepak-agarwal-rsystems%2Flandingzone%2Frefs%2Fheads%2Fmain%2Fazuredeploy.json)
