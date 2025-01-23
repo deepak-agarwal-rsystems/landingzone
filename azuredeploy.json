@@ -132,11 +132,7 @@
                         }
                     ]
                 }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgHubName'))]",
-                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgSpokeName'))]"
-            ]
+            }
         }
     ]
 }
