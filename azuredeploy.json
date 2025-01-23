@@ -28,25 +28,25 @@
             "metadata": {
                 "description": "Tags to be added to the resource group."
             }
-        }  
+        }
     },
-    "variables": {        
+    "variables": {
         "rgHubName": "[concat('rg-z-',parameters('applicationName'),'-hub-p-001')]",
         "rgSpokeName": "[concat('rg-z-',parameters('applicationName'),'-spoke-p-001')]",
-        "hubVirtualNetworkName":"[concat('vnet-z-',parameters('applicationName'),'-hub-p-001')]",
-        "spokeVirtualNetworkName":"[concat('vnet-z-',parameters('applicationName'),'-spoke-p-001')]",
+        "hubVirtualNetworkName": "[concat('vnet-z-',parameters('applicationName'),'-hub-p-001')]",
+        "spokeVirtualNetworkName": "[concat('vnet-z-',parameters('applicationName'),'-spoke-p-001')]",
         "appGatewaySubnetName": "appgw-subnet",
         "hubResourceSubnetName": "hubrsc-subnet",
         "subnetsData": [
-                {
-                    "name": "sn-z-cpru-infra",
-                    "addressPrefixes": "10.195.64.0/24",
-                    "delegations": [],
-                    "privateEndpointNetworkPolicies": "Disabled",
-                    "privateLinkServiceNetworkPolicies": "Enabled",
-                    "defaultOutboundAccess": true
-                }
-            ]       
+            {
+                "name": "sn-z-cpru-infra",
+                "addressPrefixes": "10.195.64.0/24",
+                "delegations": [],
+                "privateEndpointNetworkPolicies": "Disabled",
+                "privateLinkServiceNetworkPolicies": "Enabled",
+                "defaultOutboundAccess": true
+            }
+        ]
     },
     "resources": [
         {
@@ -76,7 +76,7 @@
             ],
             "properties": {
                 "addressSpace": {
-                    "addressPrefix": "10.1.0.0/21"
+                    "addressPrefixes": [ "10.1.0.0/21" ]
                 },
                 "subnets": [
                     {
@@ -129,7 +129,7 @@
             ],
             "properties": {
                 "addressSpace": {
-                    "addressPrefix": "10.1.20.0/21"
+                    "addressPrefixes": [ "10.1.20.0/21" ]
                 },
                 "encryption": {
                     "enabled": false,
