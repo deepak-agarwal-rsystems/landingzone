@@ -1,0 +1,218 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "applicationName": {
+            "type": "String",
+            "defaultValue": "cloud",
+            "metadata": {
+                "description": "The name of the application. Keep it in 5 letters as it will be used as a prefix for all resources."
+            },
+            "minLength": 1,
+            "maxLength": 5
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "[resourceGroup().location]",
+            "metadata": {
+                "description": "Azure Data Share service is available in these locations. Other resources will be created in the same region. It is recommended to use the same location for the resource group."
+            }
+        },
+        "tags": {
+            "defaultValue": {
+                "Cost Center": "1108-300-8602"
+            },
+            "type": "object",
+            "metadata": {
+                "description": "Tags to be added to the resource group."
+            }
+        },
+        "hubVirtualNetworkName": {
+            "type": "String",
+            "defaultValue": "vnet-z-cloud-hub-p-001",
+            "metadata": {
+                "description": "The name of the hub virtual network."
+            }
+        },
+        "hubVNetAddressPrefixes": {
+            "defaultValue": [
+                "10.0.0.0/16"
+            ],
+            "type": "Array",
+            "metadata": {
+                "description": "The address prefixes for the hub virtual network. You can add more than one address prefix by adding a comma like 10.1.0.0/21, 10.2.0.0/21"
+            }
+        },
+        "gatewaySubnetAddressPrefix": {
+            "defaultValue": "10.1.1.0/24",
+            "type": "String",
+            "metadata": {
+                "description": "The address prefix for the gateway subnet."
+            }
+        },
+        "bastionSubnetAddressPrefix": {
+            "defaultValue": "10.1.2.0/26",
+            "type": "String",
+            "metadata": {
+                "description": "The address prefix for the Azure Bastion subnet."
+            }
+        },
+        "appGatewaySubnetAddressPrefix": {
+            "defaultValue": "10.1.3.0/26",
+            "type": "String",
+            "metadata": {
+                "description": "The address prefix for the application gateway subnet."
+            }
+        },
+        "hubResourceSubnetAddressPrefix": {
+            "defaultValue": "10.1.4.0/24",
+            "type": "String",
+            "metadata": {
+                "description": "The address prefix for the hub resource subnet."
+            }
+        },
+        "spokeVirtualNetworkName": {
+            "defaultValue": "vnet-z-cpru-spoke-p-001",
+            "type": "String",
+            "metadata": {
+                "description": "The name of the spoke virtual network."
+            }
+        },
+        "spokeVNetAddressPrefixes": {
+            "defaultValue": [
+                "10.10.0.0/21"
+            ],
+            "type": "Array",
+            "metadata": {
+                "description": "The address prefixes for the spoke virtual network. You can add more than one address prefix by adding a comma."
+            }
+        },
+        "subnetsData": {
+            "type": "array",
+            "defaultValue": [
+                {
+                    "name": "sn-z-cpru-infra",
+                    "addressPrefixes": "10.195.64.0/24",
+                    "delegations": [
+
+                    ],
+                    "privateEndpointNetworkPolicies": "Disabled",
+                    "privateLinkServiceNetworkPolicies": "Enabled",
+                    "defaultOutboundAccess": true
+                }
+            ]
+        }
+    },
+    "variables": {
+        "rgHubName": "[concat('rg-z-',parameters('applicationName'),'-hub-p-001')]",
+        "rgSpokeName": "[concat('rg-z-',parameters('applicationName'),'-spoke-p-001')]",
+        "appGatewaySubnetName": "appgw-subnet",
+        "hubResourceSubnetName": "hubrsc-subnet"
+    },
+    "resources": [
+        {
+            "name": "[variables('rgHubName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2019-05-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "tags": "[parameters('tags')]"
+        },
+        {
+            "name": "[variables('rgSpokeName')]",
+            "type": "Microsoft.Resources/resourceGroups",
+            "apiVersion": "2019-05-01",
+            "location": "[parameters('location')]",
+            "dependsOn": [],
+            "tags": "[parameters('tags')]"
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2021-05-01",
+            "name": "[parameters('hubVirtualNetworkName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": "[parameters('hubVNetAddressPrefixes')]"
+                },
+                "subnets": [
+                    {
+                        "name": "GatewaySubnet",
+                        "properties": {
+                            "addressPrefix": "[parameters('gatewaySubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "AzureBastionSubnet",
+                        "properties": {
+                            "addressPrefix": "[parameters('bastionSubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "[variables('appGatewaySubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('appGatewaySubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    },
+                    {
+                        "name": "[variables('hubResourceSubnetName')]",
+                        "properties": {
+                            "addressPrefix": "[parameters('hubResourceSubnetAddressPrefix')]",
+                            "delegations": [],
+                            "privateEndpointNetworkPolicies": "Disabled",
+                            "privateLinkServiceNetworkPolicies": "Enabled"
+                        }
+                    }
+                ]
+            }
+        },
+        {
+            "type": "Microsoft.Network/virtualNetworks",
+            "apiVersion": "2021-05-01",
+            "name": "[parameters('spokeVirtualNetworkName')]",
+            "location": "[parameters('location')]",
+            "tags": "[parameters('tags')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]"
+            ],
+            "properties": {
+                "addressSpace": {
+                    "addressPrefixes": "[parameters('spokeVNetAddressPrefixes')]"
+                },
+                "encryption": {
+                    "enabled": false,
+                    "enforcement": "AllowUnencrypted"
+                },
+                "copy": [
+                    {
+                        "name": "subnets",
+                        "count": "[length(parameters('subnetsData'))]",
+                        "input": {
+                            "name": "[parameters('subnetsData')[copyIndex('subnets')].name]",
+                            "properties": {
+                                "addressPrefix": "[parameters('subnetsData')[copyIndex('subnets')].addressPrefixes]",
+                                "delegations": "[parameters('subnetsData')[copyIndex('subnets')].delegations]",
+                                "privateEndpointNetworkPolicies": "[parameters('subnetsData')[copyIndex('subnets')].privateEndpointNetworkPolicies]",
+                                "privateLinkServiceNetworkPolicies": "[parameters('subnetsData')[copyIndex('subnets')].privateLinkServiceNetworkPolicies]"
+                            }
+                        }
+                    }
+                ],
+                "enableDdosProtection": false
+            }
+        }
+    ]
+}

@@ -8,8 +8,14 @@
 # https://github.com/Azure/Enterprise-Scale/blob/main/docs/reference/treyresearch/README.md
 # https://github.com/Azure/Enterprise-Scale/wiki/Deploying-ALZ-BasicSetup
 
-# Azure Application offer and other support
+# Azure template deployment reference links
 # https://github.com/Azure/commercial-marketplace-data-offer-accelerator?tab=readme-ov-file
+# https://github.com/Azure/commercial-marketplace-data-offer-accelerator/blob/main/docs/PublisherDeployToAzure.md
+
+# Azure provide a way to deploy the ARM template using the 'Deploy a Custome Template'
+# https://portal.azure.com/#create/Microsoft.Template
+
+
 
 # Global Variables (Data need to collect from users)
 $environment = "prod"
