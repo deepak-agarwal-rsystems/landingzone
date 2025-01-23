@@ -1,5 +1,5 @@
 {
-    "$schema": "https://schema.management.azure.com/schemas/2019-10-01/subscriptionDeploymentTemplate.json#",
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/subscriptionDeploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
         "applicationName": {
@@ -13,7 +13,7 @@
         },
         "location": {
             "type": "string",
-            "defaultValue": "[resourceGroup().location]",
+            "defaultValue": "[deployment().location]",
             "metadata": {
                 "description": "Azure Data Share service is available in these locations. Other resources will be created in the same region. It is recommended to use the same location for the resource group."
             }
