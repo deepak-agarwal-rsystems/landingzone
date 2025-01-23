@@ -82,10 +82,6 @@
                             "name": "[variables('hubVirtualNetworkName')]",
                             "location": "[parameters('location')]",
                             "tags": "[parameters('tags')]",
-                            "scope": "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]",
-                            "dependsOn": [
-                                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
-                            ],
                             "properties": {
                                 "addressSpace": {
                                     "addressPrefixes": [ "10.1.0.0/21" ]
