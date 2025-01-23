@@ -129,7 +129,7 @@
             ],
             "properties": {
                 "addressSpace": {
-                    "addressPrefixes": [ "10.1.20.0/21" ]
+                    "addressPrefixes": [ "10.1.16.0/21" ]
                 },
                 "encryption": {
                     "enabled": false,
