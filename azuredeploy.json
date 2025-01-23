@@ -128,7 +128,10 @@
                         }
                     ]
                 }
-            }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgHubName'))]"
+            ]
         }
     ]
 }
