@@ -70,6 +70,9 @@
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
             "resourceGroup": "[variables('rgHubName')]",
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgHubName'))]"
+            ],
             "properties": {
                 "mode": "Incremental",
                 "template": {
@@ -128,10 +131,7 @@
                         }
                     ]
                 }
-            },
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/deployments', variables('rgHubName'))]"
-            ]
+            }
         }
     ]
 }
