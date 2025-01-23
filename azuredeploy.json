@@ -66,94 +66,77 @@
             "tags": "[parameters('tags')]"
         },
         {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2021-05-01",
-            "name": "[variables('hubVirtualNetworkName')]",
-            "location": "[parameters('location')]",
-            "tags": "[parameters('tags')]",
-            "scope": "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
-            ],
+            "name": "nestedDeployment",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "resourceGroup": "[variables('rgHubName')]",
             "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [ "10.1.0.0/21" ]
-                },
-                "subnets": [
-                    {
-                        "name": "GatewaySubnet",
-                        "properties": {
-                            "addressPrefix": "10.1.1.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Disabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    },
-                    {
-                        "name": "AzureBastionSubnet",
-                        "properties": {
-                            "addressPrefix": "10.1.2.0/26",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Disabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    },
-                    {
-                        "name": "[variables('appGatewaySubnetName')]",
-                        "properties": {
-                            "addressPrefix": "10.1.2.64/26",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Disabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    },
-                    {
-                        "name": "[variables('hubResourceSubnetName')]",
-                        "properties": {
-                            "addressPrefix": "10.1.3.0/24",
-                            "delegations": [],
-                            "privateEndpointNetworkPolicies": "Disabled",
-                            "privateLinkServiceNetworkPolicies": "Enabled"
-                        }
-                    }
-                ]
-            }
-        },
-        {
-            "type": "Microsoft.Network/virtualNetworks",
-            "apiVersion": "2021-05-01",
-            "name": "[variables('spokeVirtualNetworkName')]",
-            "location": "[parameters('location')]",
-            "tags": "[parameters('tags')]",
-            "scope": "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]",
-            "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]"
-            ],
-            "properties": {
-                "addressSpace": {
-                    "addressPrefixes": [ "10.1.16.0/21" ]
-                },
-                "encryption": {
-                    "enabled": false,
-                    "enforcement": "AllowUnencrypted"
-                },
-                "copy": [
-                    {
-                        "name": "subnets",
-                        "count": "[length(variables('subnetsData'))]",
-                        "input": {
-                            "name": "[variables('subnetsData')[copyIndex('subnets')].name]",
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2021-05-01",
+                            "name": "[variables('hubVirtualNetworkName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "scope": "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]",
+                            "dependsOn": [
+                                "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
+                            ],
                             "properties": {
-                                "addressPrefix": "[variables('subnetsData')[copyIndex('subnets')].addressPrefixes]",
-                                "delegations": "[variables('subnetsData')[copyIndex('subnets')].delegations]",
-                                "privateEndpointNetworkPolicies": "[variables('subnetsData')[copyIndex('subnets')].privateEndpointNetworkPolicies]",
-                                "privateLinkServiceNetworkPolicies": "[variables('subnetsData')[copyIndex('subnets')].privateLinkServiceNetworkPolicies]"
+                                "addressSpace": {
+                                    "addressPrefixes": [ "10.1.0.0/21" ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "GatewaySubnet",
+                                        "properties": {
+                                            "addressPrefix": "10.1.1.0/24",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    },
+                                    {
+                                        "name": "AzureBastionSubnet",
+                                        "properties": {
+                                            "addressPrefix": "10.1.2.0/26",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    },
+                                    {
+                                        "name": "[variables('appGatewaySubnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.1.2.64/26",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    },
+                                    {
+                                        "name": "[variables('hubResourceSubnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.1.3.0/24",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    }
+                                ]
                             }
                         }
-                    }
-                ],
-                "enableDdosProtection": false
-            }
+                    ]
+                }
+            },
+            "dependsOn": [
+                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgHubName'))]",
+                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgSpokeName'))]"
+            ]
         }
     ]
 }
