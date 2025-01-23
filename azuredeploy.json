@@ -130,7 +130,7 @@
                 }
             },
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgHubName'))]"
+                "[resourceId('Microsoft.Resources/deployments', variables('rgHubName'))]"
             ]
         }
     ]
