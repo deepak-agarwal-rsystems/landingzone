@@ -71,6 +71,7 @@
             "name": "[variables('hubVirtualNetworkName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
+            "scope": "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
             ],
@@ -124,6 +125,7 @@
             "name": "[variables('spokeVirtualNetworkName')]",
             "location": "[parameters('location')]",
             "tags": "[parameters('tags')]",
+            "scope": "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]",
             "dependsOn": [
                 "[resourceId('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]"
             ],
