@@ -355,7 +355,7 @@
                                                 "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('vpnGWPublicIPName'))]"
                                             },
                                             "subnet": {
-                                                "id": "[concat('Microsoft.Network/virtualNetworks/subnets/', variables('hubVirtualNetworkName'), '/GatewaySubnet')]"
+                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'GatewaySubnet')]"
                                             }
                                         }
                                     }
@@ -425,10 +425,10 @@
                                         "properties": {
                                             "privateIPAllocationMethod": "Dynamic",
                                             "publicIPAddress": {
-                                                "id": "[concat('Microsoft.Network/publicIPAddresses/', variables('bastionPublicIPName'))]"
+                                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionPublicIPName'))]"
                                             },
                                             "subnet": {
-                                                "id": "[concat('Microsoft.Network/virtualNetworks/subnets/', variables('hubVirtualNetworkName'), '/AzureBastionSubnet')]"
+                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'AzureBastionSubnet')]"
                                             }
                                         }
                                     }
