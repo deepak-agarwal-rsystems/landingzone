@@ -29,11 +29,25 @@
                 "description": "Tags to be added to the resource group."
             }
         },
+        "IsVPNGatewayNeeded": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If true, the VPN gateway will be created."
+            }
+        },
         "IsApplicationGatewayNeeded": {
             "type": "bool",
             "defaultValue": true,
             "metadata": {
                 "description": "If true, the application gateway will be created."
+            }
+        },
+        "IsBastionNeeded": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If true, the bastion will be created."
             }
         }
     },
@@ -55,7 +69,11 @@
             }
         ],
         "agPublicIPName": "[concat('pip-z-',parameters('applicationName'),'-ag-p-001')]",
-        "applicationGatewayName": "[concat('ag-z-',parameters('applicationName'),'-p-001')]"
+        "applicationGatewayName": "[concat('ag-z-',parameters('applicationName'),'-p-001')]",
+        "vpnGWPublicIPName": "[concat('pip-z-',parameters('applicationName'),'-vpngw-p-001')]",
+        "vpnGWName": "[concat('vpngw-z-',parameters('applicationName'),'-p-001')]",
+        "bastionPublicIPName": "[concat('pip-z-',parameters('applicationName'),'-bastion-p-001')]",
+        "bastionName": "[concat('bastion-z-',parameters('applicationName'),'-p-001')]"
     },
     "resources": [
         {
@@ -80,7 +98,7 @@
             "apiVersion": "2021-04-01",
             "resourceGroup": "[variables('rgHubName')]",
             "dependsOn": [
-                "[resourceId('Microsoft.Resources/resourceGroups', variables('rgHubName'))]"
+                "[concat('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -146,7 +164,7 @@
                             "location": "[parameters('location')]",
                             "tags": "[parameters('tags')]",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Network/virtualNetworks', variables('hubVirtualNetworkName'))]"
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
                             ],
                             "sku": {
                                 "name": "Standard",
@@ -173,8 +191,8 @@
                             "location": "[parameters('location')]",
                             "tags": "[parameters('tags')]",
                             "dependsOn": [
-                                "[resourceId('Microsoft.Network/virtualNetworks', variables('hubVirtualNetworkName'))]",
-                                "[resourceId('Microsoft.Network/publicIPAddresses', variables('agPublicIPName'))]"
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('agPublicIPName'))]"
                             ],
                             "properties": {
                                 "sku": {
@@ -285,6 +303,136 @@
                                 "redirectConfigurations": [],
                                 "privateLinkConfigurations": [],
                                 "enableHttp2": true
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsVPNGatewayNeeded')]",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('vpnGWPublicIPName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
+                            ],
+                            "sku": {
+                                "name": "Standard",
+                                "tier": "Regional"
+                            },
+                            "properties": {
+                                "publicIPAddressVersion": "IPv4",
+                                "publicIPAllocationMethod": "Dynamic",
+                                "idleTimeoutInMinutes": 4,
+                                "ipTags": [],
+                                "ddosSettings": {
+                                    "protectionMode": "VirtualNetworkInherited"
+                                },
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('vpnGWPublicIPName')]"
+                                }
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsVPNGatewayNeeded')]",
+                            "type": "Microsoft.Network/virtualNetworkGateways",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('vpnGWName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('vpnGWPublicIPName'))]"
+                            ],
+                            "properties": {
+                                "enablePrivateIpAddress": false,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "default",
+                                        "id": "[concat(resourceId('Microsoft.Network/virtualNetworkGateways', variables('vpnGWName')), '/ipConfigurations/default')]",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "publicIPAddress": {
+                                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('vpnGWPublicIPName'))]"
+                                            },
+                                            "subnet": {
+                                                "id": "[concat('Microsoft.Network/virtualNetworks/subnets/', variables('hubVirtualNetworkName'), '/GatewaySubnet')]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "natRules": [],
+                                "virtualNetworkGatewayPolicyGroups": [],
+                                "enableBgpRouteTranslationForNat": false,
+                                "disableIPSecReplayProtection": false,
+                                "sku": {
+                                    "name": "VpnGw4AZ",
+                                    "tier": "VpnGw4AZ"
+                                },
+                                "gatewayType": "Vpn",
+                                "vpnType": "RouteBased",
+                                "enableBgp": false,
+                                "activeActive": false,
+                                "vpnGatewayGeneration": "Generation2"
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsBastionNeeded')]",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('bastionPublicIPName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
+                            ],
+                            "sku": {
+                                "name": "Standard",
+                                "tier": "Regional"
+                            },
+                            "properties": {
+                                "publicIPAddressVersion": "IPv4",
+                                "publicIPAllocationMethod": "Dynamic",
+                                "idleTimeoutInMinutes": 4,
+                                "ipTags": [],
+                                "ddosSettings": {
+                                    "protectionMode": "VirtualNetworkInherited"
+                                },
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('bastionPublicIPName')]"
+                                }
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsBastionNeeded')]",
+                            "type": "Microsoft.Network/bastionHosts",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('bastionName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('bastionPublicIPName'))]"
+                            ],
+                            "sku": {
+                                "name": "Basic"
+                            },
+                            "properties": {
+                                "scaleUnits": 2,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "IpConf",
+                                        "id": "[concat(resourceId('Microsoft.Network/bastionHosts', variables('bastionName')), '/bastionHostIpConfigurations/IpConf')]",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "publicIPAddress": {
+                                                "id": "[concat('Microsoft.Network/publicIPAddresses/', variables('bastionPublicIPName'))]"
+                                            },
+                                            "subnet": {
+                                                "id": "[concat('Microsoft.Network/virtualNetworks/subnets/', variables('hubVirtualNetworkName'), '/AzureBastionSubnet')]"
+                                            }
+                                        }
+                                    }
+                                ]
                             }
                         }
                     ]
