@@ -28,6 +28,13 @@
             "metadata": {
                 "description": "Tags to be added to the resource group."
             }
+        },
+        "IsApplicationGatewayNeeded": {
+            "type": "bool",
+            "defaultValue": true,
+            "metadata": {
+                "description": "If true, the application gateway will be created."
+            }
         }
     },
     "variables": {
@@ -46,7 +53,8 @@
                 "privateLinkServiceNetworkPolicies": "Enabled",
                 "defaultOutboundAccess": true
             }
-        ]
+        ],
+        "agPublicIPName": "[concat('pip-z-',parameters('applicationName'),'-ag-p-001')]"
     },
     "resources": [
         {
@@ -127,6 +135,30 @@
                                         }
                                     }
                                 ]
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsApplicationGatewayNeeded')]",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('agPublicIPName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "sku": {
+                                "name": "Standard",
+                                "tier": "Regional"
+                            },
+                            "properties": {
+                                "publicIPAddressVersion": "IPv4",
+                                "publicIPAllocationMethod": "Static",
+                                "idleTimeoutInMinutes": 4,
+                                "ipTags": [],
+                                "ddosSettings": {
+                                    "protectionMode": "VirtualNetworkInherited"
+                                },
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('agPublicIPName')]"
+                                }
                             }
                         }
                     ]
