@@ -205,7 +205,7 @@
                                         "name": "appGatewayIpConfig",
                                         "properties": {
                                             "subnet": {
-                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), variables('appGatewaySubnetName'))]"
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/virtualNetworks', variables('hubVirtualNetworkName')), '/subnets/appgw-subnet')]"
                                             }
                                         }
                                     }
@@ -220,7 +220,7 @@
                                         "properties": {
                                             "privateIPAllocationMethod": "Dynamic",
                                             "publicIPAddress": {
-                                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('agPublicIPName'))]"
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/publicIPAddresses', variables('agPublicIPName'))]"
                                             }
                                         }
                                     }
@@ -265,10 +265,10 @@
                                         "name": "TestListner",
                                         "properties": {
                                             "frontendIPConfiguration": {
-                                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIpIPv4')]"
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIpIPv4')]"
                                             },
                                             "frontendPort": {
-                                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendPorts/port_80')]"
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendPorts/port_80')]"
                                             },
                                             "protocol": "Http",
                                             "sslCertificate": null,
@@ -284,14 +284,14 @@
                                         "properties": {
                                             "RuleType": "Basic",
                                             "httpListener": {
-                                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/httpListeners/TestListner')]"
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/httpListeners/TestListner')]"
                                             },
                                             "priority": 100,
                                             "backendAddressPool": {
-                                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendAddressPools/TestBackendTarget')]"
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways',variables('applicationGatewayName')), '/backendAddressPools/TestBackendTarget')]"
                                             },
                                             "backendHttpSettings": {
-                                                "id": "[concat(resourceId('Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendHttpSettingsCollection/TestBackendSetting')]"
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendHttpSettingsCollection/TestBackendSetting')]"
                                             }
                                         }
                                     }
@@ -348,14 +348,14 @@
                                 "ipConfigurations": [
                                     {
                                         "name": "default",
-                                        "id": "[concat(resourceId('Microsoft.Network/virtualNetworkGateways', variables('vpnGWName')), '/ipConfigurations/default')]",
+                                        "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworkGateways', variables('vpnGWName')), '/ipConfigurations/default')]",
                                         "properties": {
                                             "privateIPAllocationMethod": "Dynamic",
                                             "publicIPAddress": {
-                                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('vpnGWPublicIPName'))]"
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/publicIPAddresses', variables('vpnGWPublicIPName'))]"
                                             },
                                             "subnet": {
-                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'GatewaySubnet')]"
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'GatewaySubnet')]"
                                             }
                                         }
                                     }
@@ -365,8 +365,8 @@
                                 "enableBgpRouteTranslationForNat": false,
                                 "disableIPSecReplayProtection": false,
                                 "sku": {
-                                    "name": "VpnGw4AZ",
-                                    "tier": "VpnGw4AZ"
+                                    "name": "VpnGw4",
+                                    "tier": "VpnGw4"
                                 },
                                 "gatewayType": "Vpn",
                                 "vpnType": "RouteBased",
@@ -421,14 +421,14 @@
                                 "ipConfigurations": [
                                     {
                                         "name": "IpConf",
-                                        "id": "[concat(resourceId('Microsoft.Network/bastionHosts', variables('bastionName')), '/bastionHostIpConfigurations/IpConf')]",
+                                        "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/bastionHosts', variables('bastionName')), '/bastionHostIpConfigurations/IpConf')]",
                                         "properties": {
                                             "privateIPAllocationMethod": "Dynamic",
                                             "publicIPAddress": {
-                                                "id": "[resourceId('Microsoft.Network/publicIPAddresses', variables('bastionPublicIPName'))]"
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/publicIPAddresses', variables('bastionPublicIPName'))]"
                                             },
                                             "subnet": {
-                                                "id": "[resourceId('Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'AzureBastionSubnet')]"
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'AzureBastionSubnet')]"
                                             }
                                         }
                                     }
