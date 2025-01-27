@@ -1,4 +1,4 @@
-# Deploy Key vault
+# Deploy Private DNS Zone
 $templateFile = "./PrivateDNS/privatedns-template.json"
 $templateParameterFile = "./PrivateDNS/privatedns-template-parameters.$environment.json"
 az deployment group create `

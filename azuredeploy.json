@@ -75,7 +75,8 @@
         "bastionPublicIPName": "[concat('pip-z-',parameters('applicationName'),'-bastion-p-001')]",
         "bastionName": "[concat('bastion-z-',parameters('applicationName'),'-p-001')]",
         "keyvaultName": "[concat('kv-z-',parameters('applicationName'),'-p-001')]",
-        "storageAccountName": "[concat('saz',parameters('applicationName'),'p001')]"
+        "storageAccountName": "[concat('saz',parameters('applicationName'),'p001')]",
+        "privateDNSName": "[concat('privatedns-z-',parameters('applicationName'),'-p-001.local')]"
     },
     "resources": [
         {
@@ -94,353 +95,353 @@
             "dependsOn": [],
             "tags": "[parameters('tags')]"
         },
-        // {
-        //     "name": "nestedDeployment",
-        //     "type": "Microsoft.Resources/deployments",
-        //     "apiVersion": "2021-04-01",
-        //     "resourceGroup": "[variables('rgHubName')]",
-        //     "dependsOn": [
-        //         "[concat('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
-        //     ],
-        //     "properties": {
-        //         "mode": "Incremental",
-        //         "template": {
-        //             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-        //             "contentVersion": "1.0.0.0",
-        //             "resources": [
-        //                 {
-        //                     "type": "Microsoft.Network/virtualNetworks",
-        //                     "apiVersion": "2021-05-01",
-        //                     "name": "[variables('hubVirtualNetworkName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "properties": {
-        //                         "addressSpace": {
-        //                             "addressPrefixes": [ "10.1.0.0/21" ]
-        //                         },
-        //                         "subnets": [
-        //                             {
-        //                                 "name": "GatewaySubnet",
-        //                                 "properties": {
-        //                                     "addressPrefix": "10.1.1.0/24",
-        //                                     "delegations": [],
-        //                                     "privateEndpointNetworkPolicies": "Disabled",
-        //                                     "privateLinkServiceNetworkPolicies": "Enabled"
-        //                                 }
-        //                             },
-        //                             {
-        //                                 "name": "AzureBastionSubnet",
-        //                                 "properties": {
-        //                                     "addressPrefix": "10.1.2.0/26",
-        //                                     "delegations": [],
-        //                                     "privateEndpointNetworkPolicies": "Disabled",
-        //                                     "privateLinkServiceNetworkPolicies": "Enabled"
-        //                                 }
-        //                             },
-        //                             {
-        //                                 "name": "[variables('appGatewaySubnetName')]",
-        //                                 "properties": {
-        //                                     "addressPrefix": "10.1.2.64/26",
-        //                                     "delegations": [],
-        //                                     "privateEndpointNetworkPolicies": "Disabled",
-        //                                     "privateLinkServiceNetworkPolicies": "Enabled"
-        //                                 }
-        //                             },
-        //                             {
-        //                                 "name": "[variables('hubResourceSubnetName')]",
-        //                                 "properties": {
-        //                                     "addressPrefix": "10.1.3.0/24",
-        //                                     "delegations": [],
-        //                                     "privateEndpointNetworkPolicies": "Disabled",
-        //                                     "privateLinkServiceNetworkPolicies": "Enabled"
-        //                                 }
-        //                             }
-        //                         ]
-        //                     }
-        //                 },
-        //                 {
-        //                     "condition": "[parameters('IsApplicationGatewayNeeded')]",
-        //                     "type": "Microsoft.Network/publicIPAddresses",
-        //                     "apiVersion": "2023-04-01",
-        //                     "name": "[variables('agPublicIPName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "dependsOn": [
-        //                         "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
-        //                     ],
-        //                     "sku": {
-        //                         "name": "Standard",
-        //                         "tier": "Regional"
-        //                     },
-        //                     "properties": {
-        //                         "publicIPAddressVersion": "IPv4",
-        //                         "publicIPAllocationMethod": "Static",
-        //                         "idleTimeoutInMinutes": 4,
-        //                         "ipTags": [],
-        //                         "ddosSettings": {
-        //                             "protectionMode": "VirtualNetworkInherited"
-        //                         },
-        //                         "dnsSettings": {
-        //                             "domainNameLabel": "[variables('agPublicIPName')]"
-        //                         }
-        //                     }
-        //                 },
-        //                 {
-        //                     "condition": "[parameters('IsApplicationGatewayNeeded')]",
-        //                     "type": "Microsoft.Network/applicationGateways",
-        //                     "apiVersion": "2023-04-01",
-        //                     "name": "[variables('applicationGatewayName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "dependsOn": [
-        //                         "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
-        //                         "[concat('Microsoft.Network/publicIPAddresses/', variables('agPublicIPName'))]"
-        //                     ],
-        //                     "properties": {
-        //                         "sku": {
-        //                             "name": "Standard_v2",
-        //                             "tier": "Standard_v2",
-        //                             "capacity": 1
-        //                         },
-        //                         "gatewayIPConfigurations": [
-        //                             {
-        //                                 "name": "appGatewayIpConfig",
-        //                                 "properties": {
-        //                                     "subnet": {
-        //                                         "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/virtualNetworks', variables('hubVirtualNetworkName')), '/subnets/appgw-subnet')]"
-        //                                     }
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "sslCertificates": [],
-        //                         "trustedRootCertificates": [],
-        //                         "trustedClientCertificates": [],
-        //                         "sslProfiles": [],
-        //                         "frontendIPConfigurations": [
-        //                             {
-        //                                 "name": "appGwPublicFrontendIpIPv4",
-        //                                 "properties": {
-        //                                     "privateIPAllocationMethod": "Dynamic",
-        //                                     "publicIPAddress": {
-        //                                         "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/publicIPAddresses', variables('agPublicIPName'))]"
-        //                                     }
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "frontendPorts": [
-        //                             {
-        //                                 "name": "port_80",
-        //                                 "properties": {
-        //                                     "Port": 80
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "backendAddressPools": [
-        //                             {
-        //                                 "name": "TestPool",
-        //                                 "properties": {
-        //                                     "backendAddresses": []
-        //                                 }
-        //                             },
-        //                             {
-        //                                 "name": "TestBackendTarget",
-        //                                 "properties": {
-        //                                     "backendAddresses": []
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "loadDistributionPolicies": [],
-        //                         "backendHttpSettingsCollection": [
-        //                             {
-        //                                 "name": "TestBackendSetting",
-        //                                 "properties": {
-        //                                     "Port": 80,
-        //                                     "Protocol": "Http",
-        //                                     "cookieBasedAffinity": "Disabled",
-        //                                     "requestTimeout": 20
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "backendSettingsCollection": [],
-        //                         "httpListeners": [
-        //                             {
-        //                                 "name": "TestListner",
-        //                                 "properties": {
-        //                                     "frontendIPConfiguration": {
-        //                                         "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIpIPv4')]"
-        //                                     },
-        //                                     "frontendPort": {
-        //                                         "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendPorts/port_80')]"
-        //                                     },
-        //                                     "protocol": "Http",
-        //                                     "sslCertificate": null,
-        //                                     "customErrorConfigurations": []
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "listeners": [],
-        //                         "urlPathMaps": [],
-        //                         "requestRoutingRules": [
-        //                             {
-        //                                 "Name": "TestRule",
-        //                                 "properties": {
-        //                                     "RuleType": "Basic",
-        //                                     "httpListener": {
-        //                                         "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/httpListeners/TestListner')]"
-        //                                     },
-        //                                     "priority": 100,
-        //                                     "backendAddressPool": {
-        //                                         "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways',variables('applicationGatewayName')), '/backendAddressPools/TestBackendTarget')]"
-        //                                     },
-        //                                     "backendHttpSettings": {
-        //                                         "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendHttpSettingsCollection/TestBackendSetting')]"
-        //                                     }
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "routingRules": [],
-        //                         "probes": [
-        //                         ],
-        //                         "rewriteRuleSets": [],
-        //                         "redirectConfigurations": [],
-        //                         "privateLinkConfigurations": [],
-        //                         "enableHttp2": true
-        //                     }
-        //                 },
-        //                 {
-        //                     "condition": "[parameters('IsVPNGatewayNeeded')]",
-        //                     "type": "Microsoft.Network/publicIPAddresses",
-        //                     "apiVersion": "2023-04-01",
-        //                     "name": "[variables('vpnGWPublicIPName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "dependsOn": [
-        //                         "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
-        //                     ],
-        //                     "sku": {
-        //                         "name": "Standard",
-        //                         "tier": "Regional"
-        //                     },
-        //                     "properties": {
-        //                         "publicIPAddressVersion": "IPv4",
-        //                         "publicIPAllocationMethod": "Static",
-        //                         "idleTimeoutInMinutes": 4,
-        //                         "ipTags": [],
-        //                         "ddosSettings": {
-        //                             "protectionMode": "VirtualNetworkInherited"
-        //                         },
-        //                         "dnsSettings": {
-        //                             "domainNameLabel": "[variables('vpnGWPublicIPName')]"
-        //                         }
-        //                     }
-        //                 },
-        //                 {
-        //                     "condition": "[parameters('IsVPNGatewayNeeded')]",
-        //                     "type": "Microsoft.Network/virtualNetworkGateways",
-        //                     "apiVersion": "2023-04-01",
-        //                     "name": "[variables('vpnGWName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "dependsOn": [
-        //                         "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
-        //                         "[concat('Microsoft.Network/publicIPAddresses/', variables('vpnGWPublicIPName'))]"
-        //                     ],
-        //                     "properties": {
-        //                         "enablePrivateIpAddress": false,
-        //                         "ipConfigurations": [
-        //                             {
-        //                                 "name": "default",
-        //                                 "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworkGateways', variables('vpnGWName')), '/ipConfigurations/default')]",
-        //                                 "properties": {
-        //                                     "privateIPAllocationMethod": "Dynamic",
-        //                                     "publicIPAddress": {
-        //                                         "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/publicIPAddresses', variables('vpnGWPublicIPName'))]"
-        //                                     },
-        //                                     "subnet": {
-        //                                         "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'GatewaySubnet')]"
-        //                                     }
-        //                                 }
-        //                             }
-        //                         ],
-        //                         "natRules": [],
-        //                         "virtualNetworkGatewayPolicyGroups": [],
-        //                         "enableBgpRouteTranslationForNat": false,
-        //                         "disableIPSecReplayProtection": false,
-        //                         "sku": {
-        //                             "name": "VpnGw4",
-        //                             "tier": "VpnGw4"
-        //                         },
-        //                         "gatewayType": "Vpn",
-        //                         "vpnType": "RouteBased",
-        //                         "enableBgp": false,
-        //                         "activeActive": false,
-        //                         "vpnGatewayGeneration": "Generation2"
-        //                     }
-        //                 },
-        //                 {
-        //                     "condition": "[parameters('IsBastionNeeded')]",
-        //                     "type": "Microsoft.Network/publicIPAddresses",
-        //                     "apiVersion": "2023-04-01",
-        //                     "name": "[variables('bastionPublicIPName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "dependsOn": [
-        //                         "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
-        //                     ],
-        //                     "sku": {
-        //                         "name": "Standard",
-        //                         "tier": "Regional"
-        //                     },
-        //                     "properties": {
-        //                         "publicIPAddressVersion": "IPv4",
-        //                         "publicIPAllocationMethod": "Static",
-        //                         "idleTimeoutInMinutes": 4,
-        //                         "ipTags": [],
-        //                         "ddosSettings": {
-        //                             "protectionMode": "VirtualNetworkInherited"
-        //                         },
-        //                         "dnsSettings": {
-        //                             "domainNameLabel": "[variables('bastionPublicIPName')]"
-        //                         }
-        //                     }
-        //                 },
-        //                 {
-        //                     "condition": "[parameters('IsBastionNeeded')]",
-        //                     "type": "Microsoft.Network/bastionHosts",
-        //                     "apiVersion": "2023-04-01",
-        //                     "name": "[variables('bastionName')]",
-        //                     "location": "[parameters('location')]",
-        //                     "tags": "[parameters('tags')]",
-        //                     "dependsOn": [
-        //                         "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
-        //                         "[concat('Microsoft.Network/publicIPAddresses/', variables('bastionPublicIPName'))]"
-        //                     ],
-        //                     "sku": {
-        //                         "name": "Basic"
-        //                     },
-        //                     "properties": {
-        //                         "scaleUnits": 2,
-        //                         "ipConfigurations": [
-        //                             {
-        //                                 "name": "IpConf",
-        //                                 "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/bastionHosts', variables('bastionName')), '/bastionHostIpConfigurations/IpConf')]",
-        //                                 "properties": {
-        //                                     "privateIPAllocationMethod": "Dynamic",
-        //                                     "publicIPAddress": {
-        //                                         "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/publicIPAddresses', variables('bastionPublicIPName'))]"
-        //                                     },
-        //                                     "subnet": {
-        //                                         "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'AzureBastionSubnet')]"
-        //                                     }
-        //                                 }
-        //                             }
-        //                         ]
-        //                     }
-        //                 }
-        //             ]
-        //         }
-        //     }
-        // },
+        {
+            "name": "nestedDeployment",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "resourceGroup": "[variables('rgHubName')]",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/resourceGroups/', variables('rgHubName'))]"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2021-05-01",
+                            "name": "[variables('hubVirtualNetworkName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [ "10.1.0.0/21" ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "GatewaySubnet",
+                                        "properties": {
+                                            "addressPrefix": "10.1.1.0/24",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    },
+                                    {
+                                        "name": "AzureBastionSubnet",
+                                        "properties": {
+                                            "addressPrefix": "10.1.2.0/26",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    },
+                                    {
+                                        "name": "[variables('appGatewaySubnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.1.2.64/26",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    },
+                                    {
+                                        "name": "[variables('hubResourceSubnetName')]",
+                                        "properties": {
+                                            "addressPrefix": "10.1.3.0/24",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsApplicationGatewayNeeded')]",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('agPublicIPName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
+                            ],
+                            "sku": {
+                                "name": "Standard",
+                                "tier": "Regional"
+                            },
+                            "properties": {
+                                "publicIPAddressVersion": "IPv4",
+                                "publicIPAllocationMethod": "Static",
+                                "idleTimeoutInMinutes": 4,
+                                "ipTags": [],
+                                "ddosSettings": {
+                                    "protectionMode": "VirtualNetworkInherited"
+                                },
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('agPublicIPName')]"
+                                }
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsApplicationGatewayNeeded')]",
+                            "type": "Microsoft.Network/applicationGateways",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('applicationGatewayName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('agPublicIPName'))]"
+                            ],
+                            "properties": {
+                                "sku": {
+                                    "name": "Standard_v2",
+                                    "tier": "Standard_v2",
+                                    "capacity": 1
+                                },
+                                "gatewayIPConfigurations": [
+                                    {
+                                        "name": "appGatewayIpConfig",
+                                        "properties": {
+                                            "subnet": {
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/virtualNetworks', variables('hubVirtualNetworkName')), '/subnets/appgw-subnet')]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "sslCertificates": [],
+                                "trustedRootCertificates": [],
+                                "trustedClientCertificates": [],
+                                "sslProfiles": [],
+                                "frontendIPConfigurations": [
+                                    {
+                                        "name": "appGwPublicFrontendIpIPv4",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "publicIPAddress": {
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/publicIPAddresses', variables('agPublicIPName'))]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "frontendPorts": [
+                                    {
+                                        "name": "port_80",
+                                        "properties": {
+                                            "Port": 80
+                                        }
+                                    }
+                                ],
+                                "backendAddressPools": [
+                                    {
+                                        "name": "TestPool",
+                                        "properties": {
+                                            "backendAddresses": []
+                                        }
+                                    },
+                                    {
+                                        "name": "TestBackendTarget",
+                                        "properties": {
+                                            "backendAddresses": []
+                                        }
+                                    }
+                                ],
+                                "loadDistributionPolicies": [],
+                                "backendHttpSettingsCollection": [
+                                    {
+                                        "name": "TestBackendSetting",
+                                        "properties": {
+                                            "Port": 80,
+                                            "Protocol": "Http",
+                                            "cookieBasedAffinity": "Disabled",
+                                            "requestTimeout": 20
+                                        }
+                                    }
+                                ],
+                                "backendSettingsCollection": [],
+                                "httpListeners": [
+                                    {
+                                        "name": "TestListner",
+                                        "properties": {
+                                            "frontendIPConfiguration": {
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendIPConfigurations/appGwPublicFrontendIpIPv4')]"
+                                            },
+                                            "frontendPort": {
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/frontendPorts/port_80')]"
+                                            },
+                                            "protocol": "Http",
+                                            "sslCertificate": null,
+                                            "customErrorConfigurations": []
+                                        }
+                                    }
+                                ],
+                                "listeners": [],
+                                "urlPathMaps": [],
+                                "requestRoutingRules": [
+                                    {
+                                        "Name": "TestRule",
+                                        "properties": {
+                                            "RuleType": "Basic",
+                                            "httpListener": {
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/httpListeners/TestListner')]"
+                                            },
+                                            "priority": 100,
+                                            "backendAddressPool": {
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways',variables('applicationGatewayName')), '/backendAddressPools/TestBackendTarget')]"
+                                            },
+                                            "backendHttpSettings": {
+                                                "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/applicationGateways', variables('applicationGatewayName')), '/backendHttpSettingsCollection/TestBackendSetting')]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "routingRules": [],
+                                "probes": [
+                                ],
+                                "rewriteRuleSets": [],
+                                "redirectConfigurations": [],
+                                "privateLinkConfigurations": [],
+                                "enableHttp2": true
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsVPNGatewayNeeded')]",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('vpnGWPublicIPName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
+                            ],
+                            "sku": {
+                                "name": "Standard",
+                                "tier": "Regional"
+                            },
+                            "properties": {
+                                "publicIPAddressVersion": "IPv4",
+                                "publicIPAllocationMethod": "Static",
+                                "idleTimeoutInMinutes": 4,
+                                "ipTags": [],
+                                "ddosSettings": {
+                                    "protectionMode": "VirtualNetworkInherited"
+                                },
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('vpnGWPublicIPName')]"
+                                }
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsVPNGatewayNeeded')]",
+                            "type": "Microsoft.Network/virtualNetworkGateways",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('vpnGWName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('vpnGWPublicIPName'))]"
+                            ],
+                            "properties": {
+                                "enablePrivateIpAddress": false,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "default",
+                                        "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworkGateways', variables('vpnGWName')), '/ipConfigurations/default')]",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "publicIPAddress": {
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/publicIPAddresses', variables('vpnGWPublicIPName'))]"
+                                            },
+                                            "subnet": {
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'GatewaySubnet')]"
+                                            }
+                                        }
+                                    }
+                                ],
+                                "natRules": [],
+                                "virtualNetworkGatewayPolicyGroups": [],
+                                "enableBgpRouteTranslationForNat": false,
+                                "disableIPSecReplayProtection": false,
+                                "sku": {
+                                    "name": "VpnGw4",
+                                    "tier": "VpnGw4"
+                                },
+                                "gatewayType": "Vpn",
+                                "vpnType": "RouteBased",
+                                "enableBgp": false,
+                                "activeActive": false,
+                                "vpnGatewayGeneration": "Generation2"
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsBastionNeeded')]",
+                            "type": "Microsoft.Network/publicIPAddresses",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('bastionPublicIPName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]"
+                            ],
+                            "sku": {
+                                "name": "Standard",
+                                "tier": "Regional"
+                            },
+                            "properties": {
+                                "publicIPAddressVersion": "IPv4",
+                                "publicIPAllocationMethod": "Static",
+                                "idleTimeoutInMinutes": 4,
+                                "ipTags": [],
+                                "ddosSettings": {
+                                    "protectionMode": "VirtualNetworkInherited"
+                                },
+                                "dnsSettings": {
+                                    "domainNameLabel": "[variables('bastionPublicIPName')]"
+                                }
+                            }
+                        },
+                        {
+                            "condition": "[parameters('IsBastionNeeded')]",
+                            "type": "Microsoft.Network/bastionHosts",
+                            "apiVersion": "2023-04-01",
+                            "name": "[variables('bastionName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('hubVirtualNetworkName'))]",
+                                "[concat('Microsoft.Network/publicIPAddresses/', variables('bastionPublicIPName'))]"
+                            ],
+                            "sku": {
+                                "name": "Basic"
+                            },
+                            "properties": {
+                                "scaleUnits": 2,
+                                "ipConfigurations": [
+                                    {
+                                        "name": "IpConf",
+                                        "id": "[concat(resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/bastionHosts', variables('bastionName')), '/bastionHostIpConfigurations/IpConf')]",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "publicIPAddress": {
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/publicIPAddresses', variables('bastionPublicIPName'))]"
+                                            },
+                                            "subnet": {
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'), 'Microsoft.Network/virtualNetworks/subnets', variables('hubVirtualNetworkName'), 'AzureBastionSubnet')]"
+                                            }
+                                        }
+                                    }
+                                ]
+                            }
+                        }
+                    ]
+                }
+            }
+        },
         {
             "name": "nestedDeployment",
             "type": "Microsoft.Resources/deployments",
@@ -455,6 +456,29 @@
                     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
                     "contentVersion": "1.0.0.0",
                     "resources": [
+                        {
+                            "type": "Microsoft.Network/virtualNetworks",
+                            "apiVersion": "2021-05-01",
+                            "name": "[variables('spokeVirtualNetworkName')]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "properties": {
+                                "addressSpace": {
+                                    "addressPrefixes": [ "10.2.0.0/21" ]
+                                },
+                                "subnets": [
+                                    {
+                                        "name": "Default",
+                                        "properties": {
+                                            "addressPrefix": "10.2.1.0/24",
+                                            "delegations": [],
+                                            "privateEndpointNetworkPolicies": "Disabled",
+                                            "privateLinkServiceNetworkPolicies": "Enabled"
+                                        }
+                                    }
+                                ]
+                            }
+                        },
                         {
                             "type": "Microsoft.KeyVault/vaults",
                             "apiVersion": "2023-02-01",
@@ -609,6 +633,53 @@
                                     "corsRules": []
                                 }
                             }
+                        },
+                        {
+                            "type": "Microsoft.Network/privateDnsZones",
+                            "apiVersion": "2024-06-01",
+                            "name": "[variables('privateDNSName')]",
+                            "location": "global",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/virtualNetworks/', variables('spokeVirtualNetworkName'))]"
+                            ],
+                            "properties": {
+                                "maxNumberOfRecordSets": 1000,
+                                "maxNumberOfVirtualNetworkLinks": 100,
+                                "maxNumberOfVirtualNetworkLinksInPendingState": 10
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                            "apiVersion": "2024-06-01",
+                            "name": "[concat(variables('privateDNSName'), '/spoke')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/privateDnsZones/', variables('privateDNSName'))]"
+                            ],
+                            "location": "global",
+                            "properties": {
+                                "registrationEnabled": true,
+                                "virtualNetwork": {
+                                    "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/virtualNetworks', variables('spokeVirtualNetworkName'))]"
+                                }
+                            },
+                            "tags": "[parameters('tags')]"
+                        },
+                        {
+                            "type": "Microsoft.Network/privateDnsZones/virtualNetworkLinks",
+                            "apiVersion": "2024-06-01",
+                            "name": "[concat(variables('privateDNSName'), '/hub')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/privateDnsZones/', variables('privateDNSName'))]"
+                            ],
+                            "location": "global",
+                            "properties": {
+                                "registrationEnabled": true,
+                                "virtualNetwork": {
+                                    "id": "[resourceId(subscription().subscriptionId, variables('rgHubName'),'Microsoft.Network/virtualNetworks', variables('hubVirtualNetworkName'))]"
+                                }
+                            },
+                            "tags": "[parameters('tags')]"
                         }
                     ]
                 }
