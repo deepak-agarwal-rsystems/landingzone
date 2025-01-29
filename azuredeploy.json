@@ -53,10 +53,28 @@
         "NumberOfInstanceForWebVMs": {
             "type": "int",
             "defaultValue": 2,
-            "minValue": 1,
+            "minValue": 0,
             "maxValue": 3,
             "metadata": {
-                "description": "Create multiple instances of the Web VMs. Minimum 1 and maximum 3 instances can be created."
+                "description": "Create multiple instances of the Web VMs. Minimum 0 and maximum 3 instances can be created. If mention 0 then no VM will be created."
+            }
+        },
+        "NumberOfInstanceForLinuxVMs": {
+            "type": "int",
+            "defaultValue": 2,
+            "minValue": 0,
+            "maxValue": 3,
+            "metadata": {
+                "description": "Create multiple instances of the Linux VMs. Minimum 0 and maximum 3 instances can be created. If mention 0 then no VM will be created."
+            }
+        },
+        "NumberOfInstanceForSQLVMs": {
+            "type": "int",
+            "defaultValue": 0,
+            "minValue": 0,
+            "maxValue": 3,
+            "metadata": {
+                "description": "Create multiple instances of the SQL VMs. Minimum 0 and maximum 3 instances can be created. If mention 0 then no VM will be created."
             }
         },
         "VMUserName": {
@@ -69,7 +87,7 @@
         "VMPassword": {
             "type": "securestring",
             "metadata": {
-                "description": "The password for the virtual machine."
+                "description": "The password for the virtual machine. Password must have at least 12 characters and must have at least one uppercase letter, one lowercase letter, one number, and one special character."
             },
             "defaultValue": "Password@123"
         }
@@ -100,7 +118,9 @@
         "keyvaultName": "[concat('kv-z-',parameters('applicationName'),'-p-001')]",
         "storageAccountName": "[concat('saz',parameters('applicationName'),'p001')]",
         "privateDNSName": "[concat('privatedns-z-',parameters('applicationName'),'-p-001.local')]",
-        "webVirtualMachineName": "[concat('vm-z-web-p')]"
+        "webVirtualMachineName": "[concat('vm-z-web-p')]",
+        "linuxVirtualMachineName": "[concat('vm-z-linux-p')]",
+        "sqlVirtualMachineName": "[concat('vm-z-sql-p')]"
     },
     "resources": [
         {
@@ -720,7 +740,7 @@
             }
         },
         {
-            "name": "[concat('vmdeplyment', copyIndex())]",
+            "name": "[concat('webVMdeployment', copyIndex())]",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2021-04-01",
             "resourceGroup": "[variables('rgSpokeName')]",
@@ -743,7 +763,7 @@
                             "apiVersion": "2023-04-01",
                             "location": "[parameters('location')]",
                             "tags": "[parameters('tags')]",
-                            "name": "[concat(variables('webVirtualMachineName'), '-', copyIndex(1), '-nic')]",
+                            "name": "[format('{0}-nic-{1:000}',variables('webVirtualMachineName'), copyIndex(1))]",
                             "kind": "Regular",
                             "properties": {
                                 "ipConfigurations": [
@@ -775,9 +795,9 @@
                             "apiVersion": "2023-03-01",
                             "location": "[parameters('location')]",
                             "tags": "[parameters('tags')]",
-                            "name": "[concat(variables('webVirtualMachineName'), '-', copyIndex(1))]",
+                            "name": "[format('{0}-{1:000}',variables('webVirtualMachineName'), copyIndex(1))]",
                             "dependsOn": [
-                                "[concat('Microsoft.Network/networkInterfaces/', concat(variables('webVirtualMachineName'), '-', copyIndex(1), '-nic'))]"
+                                "[concat('Microsoft.Network/networkInterfaces/', format('{0}-nic-{1:000}',variables('webVirtualMachineName'), copyIndex(1)))]"
                             ],
                             "properties": {
                                 "hardwareProfile": {
@@ -807,7 +827,7 @@
                                     "diskControllerType": "SCSI"
                                 },
                                 "osProfile": {
-                                    "computerName": "[concat(variables('webVirtualMachineName'), '-', copyIndex(1))]",
+                                    "computerName": "[format('{0}-{1:000}',variables('webVirtualMachineName'), copyIndex(1))]",
                                     "adminUsername": "[parameters('VMUserName')]",
                                     "adminPassword": "[parameters('VMPassword')]",
                                     "windowsConfiguration": {
@@ -833,7 +853,7 @@
                                 "networkProfile": {
                                     "networkInterfaces": [
                                         {
-                                            "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/networkInterfaces', concat(variables('webVirtualMachineName'), '-', copyIndex(1), '-nic'))]",
+                                            "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/networkInterfaces', format('{0}-nic-{1:000}',variables('webVirtualMachineName'), copyIndex(1)))]",
                                             "properties": {
                                                 "deleteOption": "Delete"
                                             }
@@ -850,6 +870,258 @@
                     ]
                 }
             }
+        },
+        {
+            "name": "[concat('linuxVMdeployment', copyIndex())]",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2021-04-01",
+            "resourceGroup": "[variables('rgSpokeName')]",
+            "dependsOn": [
+                "[concat('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]",
+                "[concat('Microsoft.Resources/deployments/', 'spokeInfraDeployment')]"
+            ],
+            "copy": {
+                "name": "nicCopy",
+                "count": "[parameters('NumberOfInstanceForLinuxVMs')]"
+            },
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.Compute/virtualMachines",
+                            "apiVersion": "2023-03-01",
+                            "name": "[format('{0}-{1:000}',variables('linuxVirtualMachineName'), copyIndex(1))]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "dependsOn": [
+                                "[concat('Microsoft.Network/networkInterfaces/', format('{0}-nic-{1:000}',variables('linuxVirtualMachineName'), copyIndex(1)))]"
+                            ],
+                            "properties": {
+                                "hardwareProfile": {
+                                    "vmSize": "Standard_DS2_v2"
+                                },
+                                "additionalCapabilities": {
+                                    "hibernationEnabled": false
+                                },
+                                "storageProfile": {
+                                    "imageReference": {
+                                        "publisher": "RedHat",
+                                        "offer": "RHEL",
+                                        "sku": "8-lvm-gen2",
+                                        "version": "latest"
+                                    },
+                                    "osDisk": {
+                                        "osType": "Linux",
+                                        "createOption": "FromImage",
+                                        "caching": "ReadWrite",
+                                        "managedDisk": {
+                                            "storageAccountType": "Premium_LRS"
+                                        },
+                                        "deleteOption": "Delete",
+                                        "diskSizeGB": 512
+                                    },
+                                    "dataDisks": [],
+                                    "diskControllerType": "SCSI"
+                                },
+                                "osProfile": {
+                                    "computerName": "[format('{0}-{1:000}',variables('linuxVirtualMachineName'), copyIndex(1))]",
+                                    "adminUsername": "[parameters('VMUserName')]",
+                                    "adminPassword": "[parameters('VMPassword')]",
+                                    "linuxConfiguration": {
+                                        "disablePasswordAuthentication": false,
+                                        "provisionVMAgent": true,
+                                        "patchSettings": {
+                                            "patchMode": "ImageDefault",
+                                            "assessmentMode": "ImageDefault"
+                                        },
+                                        "enableVMAgentPlatformUpdates": false
+                                    },
+                                    "secrets": [],
+                                    "allowExtensionOperations": true
+                                },
+                                "networkProfile": {
+                                    "networkInterfaces": [
+                                        {
+                                            "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/networkInterfaces', format('{0}-nic-{1:000}',variables('linuxVirtualMachineName'), copyIndex(1)))]",
+                                            "properties": {
+                                                "deleteOption": "Delete"
+                                            }
+                                        }
+                                    ]
+                                },
+                                "diagnosticsProfile": {
+                                    "bootDiagnostics": {
+                                        "enabled": true
+                                    }
+                                }
+                            }
+                        },
+                        {
+                            "type": "Microsoft.Network/networkInterfaces",
+                            "apiVersion": "2023-04-01",
+                            "name": "[format('{0}-nic-{1:000}',variables('linuxVirtualMachineName'), copyIndex(1))]",
+                            "location": "[parameters('location')]",
+                            "tags": "[parameters('tags')]",
+                            "kind": "Regular",
+                            "properties": {
+                                "ipConfigurations": [
+                                    {
+                                        "name": "ipconfig1",
+                                        "properties": {
+                                            "privateIPAllocationMethod": "Dynamic",
+                                            "subnet": {
+                                                "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/virtualNetworks/subnets', variables('spokeVirtualNetworkName'), 'sn-z-vm')]"
+                                            },
+                                            "primary": true,
+                                            "privateIPAddressVersion": "IPv4"
+                                        }
+                                    }
+                                ],
+                                "dnsSettings": {
+                                    "dnsServers": []
+                                },
+                                "enableAcceleratedNetworking": false,
+                                "enableIPForwarding": false,
+                                "disableTcpStateTracking": false,
+                                "nicType": "Standard",
+                                "auxiliaryMode": "None",
+                                "auxiliarySku": "None"
+                            }
+                        }
+                    ]
+                }
+            }
         }
+        // {
+        //     "name": "[concat('SQLVMdeployment', copyIndex())]",
+        //     "type": "Microsoft.Resources/deployments",
+        //     "apiVersion": "2021-04-01",
+        //     "resourceGroup": "[variables('rgSpokeName')]",
+        //     "dependsOn": [
+        //         "[concat('Microsoft.Resources/resourceGroups/', variables('rgSpokeName'))]",
+        //         "[concat('Microsoft.Resources/deployments/', 'spokeInfraDeployment')]"
+        //     ],
+        //     "copy": {
+        //         "name": "nicCopy",
+        //         "count": "[parameters('NumberOfInstanceForSQLVMs')]"
+        //     },
+        //     "properties": {
+        //         "mode": "Incremental",
+        //         "template": {
+        //             "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+        //             "contentVersion": "1.0.0.0",
+        //             "resources": [
+        //                 {
+        //                     "type": "Microsoft.Compute/virtualMachines",
+        //                     "apiVersion": "2023-03-01",
+        //                     "name": "[format('{0}-{1:000}',variables('sqlVirtualMachineName'), copyIndex(1))]",
+        //                     "location": "[parameters('location')]",
+        //                     "tags": "[parameters('tags')]",
+        //                     "dependsOn": [
+        //                         "[concat('Microsoft.Network/networkInterfaces/', format('{0}-nic-{1:000}',variables('sqlVirtualMachineName'), copyIndex(1)))]"
+        //                     ],
+        //                     "properties": {
+        //                         "hardwareProfile": {
+        //                             "vmSize": "Standard_DS2_v2"
+        //                         },
+        //                         "additionalCapabilities": {
+        //                             "hibernationEnabled": false
+        //                         },
+        //                         "storageProfile": {
+        //                             "imageReference": {
+        //                                 "publisher": "MicrosoftSQLServer",
+        //                                 "offer": "SQL2016SP2-WS2016",
+        //                                 "sku": "Enterprise",
+        //                                 "version": "latest"
+        //                             },
+        //                             "osDisk": {
+        //                                 "osType": "Windows",
+        //                                 "createOption": "FromImage",
+        //                                 "caching": "ReadWrite",
+        //                                 "managedDisk": {
+        //                                     "storageAccountType": "Premium_LRS"
+        //                                 },
+        //                                 "deleteOption": "Delete",
+        //                                 "diskSizeGB": 512
+        //                             },
+        //                             "dataDisks": [],
+        //                             "diskControllerType": "SCSI"
+        //                         },
+        //                         "osProfile": {
+        //                             "computerName": "[format('{0}-{1:000}',variables('sqlVirtualMachineName'), copyIndex(1))]",
+        //                             "adminUsername": "[parameters('VMUserName')]",
+        //                             "adminPassword": "[parameters('VMPassword')]",
+        //                             "windowsConfiguration": {
+        //                                 "provisionVmAgent": true,
+        //                                 "enableAutomaticUpdates": true,
+        //                                 "patchSettings": {
+        //                                     "patchMode": "AutomaticByOS",
+        //                                     "assessmentMode": "ImageDefault",
+        //                                     "enableHotpatching": false
+        //                                 }
+        //                             }
+        //                         },
+        //                         "networkProfile": {
+        //                             "networkInterfaces": [
+        //                                 {
+        //                                     "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/networkInterfaces', format('{0}-nic-{1:000}',variables('sqlVirtualMachineName'), copyIndex(1)))]",
+        //                                     "properties": {
+        //                                         "deleteOption": "Delete"
+        //                                     }
+        //                                 }
+        //                             ]
+        //                         },
+        //                         "diagnosticsProfile": {
+        //                             "bootDiagnostics": {
+        //                                 "enabled": true
+        //                             }
+        //                         }
+        //                     },
+        //                     "zones": [
+        //                         "1"
+        //                     ]
+        //                 },
+        //                 {
+        //                     "type": "Microsoft.Network/networkInterfaces",
+        //                     "apiVersion": "2023-04-01",
+        //                     "name": "[format('{0}-nic-{1:000}',variables('sqlVirtualMachineName'), copyIndex(1))]",
+        //                     "location": "[parameters('location')]",
+        //                     "tags": "[parameters('tags')]",
+        //                     "kind": "Regular",
+        //                     "properties": {
+        //                         "ipConfigurations": [
+        //                             {
+        //                                 "name": "ipconfig1",
+        //                                 "properties": {
+        //                                     "privateIPAllocationMethod": "Dynamic",
+        //                                     "subnet": {
+        //                                         "id": "[resourceId(subscription().subscriptionId, variables('rgSpokeName'), 'Microsoft.Network/virtualNetworks/subnets', variables('spokeVirtualNetworkName'), 'sn-z-vm')]"
+        //                                     },
+        //                                     "primary": true,
+        //                                     "privateIPAddressVersion": "IPv4"
+        //                                 }
+        //                             }
+        //                         ],
+        //                         "dnsSettings": {
+        //                             "dnsServers": []
+        //                         },
+        //                         "enableAcceleratedNetworking": false,
+        //                         "enableIPForwarding": false,
+        //                         "disableTcpStateTracking": false,
+        //                         "nicType": "Standard",
+        //                         "auxiliaryMode": "None",
+        //                         "auxiliarySku": "None"
+        //                     },
+        //                     "zones": [
+        //                         "1"
+        //                     ]
+        //                 }
+        //             ]
+        //         }
+        //     }
+        // }
     ]
 }
