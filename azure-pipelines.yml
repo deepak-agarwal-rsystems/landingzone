@@ -10,10 +10,15 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
-- script: echo Hello, world!
-  displayName: 'Run a one-line script'
-
-- script: |
-    echo Add other tasks to build, test, and deploy your project.
-    echo See https://aka.ms/yaml
-  displayName: 'Run a multi-line script'
+- task: AzureResourceManagerTemplateDeployment@3
+  inputs:
+    deploymentScope: 'Resource Group'
+    azureResourceManagerConnection: 'TestNetAPIServiceConnection'
+    subscriptionId: '5b991a8f-cbab-4dff-b9da-ed30e02b1885'
+    action: 'Create Or Update Resource Group'
+    resourceGroupName: 'rg-temp-prac'
+    location: 'Central India'
+    templateLocation: 'URL of the file'
+    csmFileLink: 'https://raw.githubusercontent.com/deepak-agarwal-rsystems/landingzone/refs/heads/main/azuredeploy.json'
+    overrideParameters: '-applicationName cloud'
+    deploymentMode: 'Incremental'
